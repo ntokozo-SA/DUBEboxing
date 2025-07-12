@@ -22,10 +22,11 @@ const Navbar = () => {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="flex-shrink-0 flex items-center">
-              <h1 className="text-2xl font-bold text-gray-900">
-                <span className="text-primary-600">GYM</span>
-                <span className="text-secondary-600">FLEX</span>
-              </h1>
+              <img 
+                src="/logo.jpg" 
+                alt="DUBE BOXING CLUB Logo" 
+                className="h-12 w-auto"
+              />
             </Link>
           </div>
 

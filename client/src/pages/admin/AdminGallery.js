@@ -40,7 +40,7 @@ const AdminGallery = () => {
 
     const fileInput = document.getElementById('imageUrl');
     if (fileInput.files[0]) {
-      formDataObj.append('imageUrl', fileInput.files[0]);
+      formDataObj.append('image', fileInput.files[0]);
     }
 
     try {
@@ -53,6 +53,7 @@ const AdminGallery = () => {
       resetForm();
     } catch (error) {
       console.error('Failed to save gallery item:', error);
+      alert('Failed to save gallery item. Please try again.');
     }
   };
 
@@ -213,6 +214,9 @@ const AdminGallery = () => {
                     src={`http://localhost:5000${item.imageUrl}`}
                     alt={item.title}
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.src = 'https://via.placeholder.com/300x200?text=Image+Not+Found';
+                    }}
                   />
                   <div className="absolute top-2 left-2 bg-primary-600 text-white px-2 py-1 rounded-full text-xs font-semibold capitalize">
                     {item.category}

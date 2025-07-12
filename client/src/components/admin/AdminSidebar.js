@@ -31,11 +31,14 @@ const AdminSidebar = () => {
   return (
     <div className="bg-gray-900 text-white w-64 min-h-screen fixed left-0 top-0">
       <div className="p-6">
-        <h1 className="text-2xl font-bold">
-          <span className="text-primary-400">GYM</span>
-          <span className="text-secondary-400">FLEX</span>
-        </h1>
-        <p className="text-gray-400 text-sm mt-1">Admin Panel</p>
+        <div className="flex items-center mb-2">
+          <img 
+            src="/logo.jpg" 
+            alt="Dube Boxing Club Logo" 
+            className="h-10 w-auto"
+          />
+        </div>
+        <p className="text-gray-400 text-sm">Admin Panel</p>
       </div>
 
       <nav className="mt-8">

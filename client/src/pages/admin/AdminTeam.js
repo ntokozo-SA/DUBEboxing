@@ -42,7 +42,7 @@ const AdminTeam = () => {
 
     const fileInput = document.getElementById('imageUrl');
     if (fileInput.files[0]) {
-      formDataObj.append('imageUrl', fileInput.files[0]);
+      formDataObj.append('image', fileInput.files[0]);
     }
 
     try {
@@ -55,6 +55,7 @@ const AdminTeam = () => {
       resetForm();
     } catch (error) {
       console.error('Failed to save team member:', error);
+      alert('Failed to save team member. Please try again.');
     }
   };
 
@@ -79,8 +80,8 @@ const AdminTeam = () => {
     setFormData({
       name: member.name,
       position: member.position,
-      description: member.description,
-      order: member.order,
+      description: member.description || '',
+      order: member.order || 0,
       isActive: member.isActive
     });
     setEditingMember(member);
@@ -164,25 +165,24 @@ const AdminTeam = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Display Order
+                      Order
                     </label>
                     <input
                       type="number"
                       value={formData.order}
-                      onChange={(e) => setFormData({...formData, order: parseInt(e.target.value)})}
+                      onChange={(e) => setFormData({...formData, order: parseInt(e.target.value) || 0})}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Profile Image
+                      Image
                     </label>
                     <input
                       type="file"
                       id="imageUrl"
                       accept="image/*"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                      required={!editingMember}
                     />
                   </div>
                 </div>
@@ -218,15 +218,24 @@ const AdminTeam = () => {
           )}
 
           {/* Team Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {team.map((member) => (
               <div key={member._id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="relative h-64 overflow-hidden">
-                  <img
-                    src={`http://localhost:5000${member.imageUrl}`}
-                    alt={member.name}
-                    className="w-full h-full object-cover"
-                  />
+                <div className="relative h-48 overflow-hidden">
+                  {member.imageUrl ? (
+                    <img
+                      src={`http://localhost:5000${member.imageUrl}`}
+                      alt={member.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.src = 'https://via.placeholder.com/300x200?text=No+Image';
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                      <span className="text-gray-500">No Image</span>
+                    </div>
+                  )}
                   <div className="absolute top-2 right-2 flex space-x-1">
                     <button
                       onClick={() => editMember(member)}
@@ -242,7 +251,7 @@ const AdminTeam = () => {
                     </button>
                   </div>
                 </div>
-                <div className="p-4 text-center">
+                <div className="p-4">
                   <h3 className="text-lg font-semibold text-gray-900 mb-1">{member.name}</h3>
                   <p className="text-primary-600 font-medium mb-2">{member.position}</p>
                   {member.description && (
@@ -262,6 +271,18 @@ const AdminTeam = () => {
               </div>
             ))}
           </div>
+
+          {team.length === 0 && (
+            <div className="text-center py-12">
+              <div className="text-gray-400 mb-4">
+                <svg className="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No team members</h3>
+              <p className="text-gray-500">Get started by adding your first team member.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

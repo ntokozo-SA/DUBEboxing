@@ -151,11 +151,11 @@ app.get('/api/analytics', auth, (req, res) => {
 // Settings routes
 app.get('/api/settings', (req, res) => {
   res.json({
-    contactInfo: {
-      phone: '+1 234 567 8900',
-      email: 'info@gymflex.com',
-      address: '123 Fitness Street, Gym City, GC 12345'
-    },
+          contactInfo: {
+        phone: '+27 76 662 3761',
+        email: 'klethiba25@gmail.com',
+        address: 'Mahalefele road, johannesburg, south africa 1801'
+      },
     businessHours: {
       monday: '6:00 AM - 10:00 PM',
       tuesday: '6:00 AM - 10:00 PM',

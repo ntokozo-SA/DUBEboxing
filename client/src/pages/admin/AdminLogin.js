@@ -41,10 +41,13 @@ const AdminLogin = () => {
       <div className="max-w-md w-full space-y-8">
         <div>
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">
-              <span className="text-primary-600">GYM</span>
-              <span className="text-secondary-600">FLEX</span>
-            </h1>
+            <div className="flex items-center justify-center mb-4">
+              <img 
+                src="/logo.jpg" 
+                alt="Dube Boxing Club Logo" 
+                className="h-20 w-auto"
+              />
+            </div>
             <h2 className="text-2xl font-bold text-gray-900">Admin Login</h2>
             <p className="mt-2 text-sm text-gray-600">
               Sign in to access the admin dashboard

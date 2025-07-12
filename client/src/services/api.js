@@ -9,12 +9,17 @@ const api = axios.create({
   },
 });
 
-// Request interceptor (simplified)
+// Get token from localStorage
+const getToken = () => {
+  return localStorage.getItem('adminToken');
+};
+
+// Request interceptor
 api.interceptors.request.use(
   (config) => {
-    // Always add admin token for admin routes
-    if (config.url.includes('/admin') || config.method !== 'get') {
-      config.headers.Authorization = 'Bearer admin-token';
+    const token = getToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
@@ -27,7 +32,11 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Removed automatic redirect to login
+    if (error.response?.status === 401) {
+      localStorage.removeItem('adminToken');
+      localStorage.removeItem('adminUser');
+      window.location.href = '/admin/login';
+    }
     return Promise.reject(error);
   }
 );

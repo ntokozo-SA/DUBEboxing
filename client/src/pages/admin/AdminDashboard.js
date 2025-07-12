@@ -23,9 +23,10 @@ const AdminDashboard = () => {
     const fetchStats = async () => {
       try {
         const response = await analyticsAPI.get(7); // Last 7 days
-        setStats(response.data);
+        setStats(response.data || { totalVisits: 0, analytics: [] });
       } catch (error) {
         console.error('Failed to fetch stats:', error);
+        setStats({ totalVisits: 0, analytics: [] });
       } finally {
         setLoading(false);
       }
@@ -97,7 +98,7 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {stats.analytics.slice(0, 3).map((item, index) => (
+            {(stats.analytics || []).slice(0, 3).map((item, index) => (
               <div key={index} className="bg-white rounded-lg shadow-md p-6">
                 <div className="flex items-center">
                   <div className={`p-3 rounded-full ${
@@ -147,7 +148,7 @@ const AdminDashboard = () => {
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Activity</h2>
             <div className="space-y-4">
-              {stats.analytics.slice(0, 5).map((item, index) => (
+              {(stats.analytics || []).slice(0, 5).map((item, index) => (
                 <div key={index} className="flex items-center justify-between py-3 border-b border-gray-200 last:border-b-0">
                   <div className="flex items-center">
                     <div className="w-3 h-3 bg-primary-600 rounded-full mr-3"></div>

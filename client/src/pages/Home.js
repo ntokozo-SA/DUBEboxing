@@ -1,59 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { settingsAPI } from '../services/api';
+import React from 'react';
 
 const Home = () => {
-  const [settings, setSettings] = useState({
-    homeVideoUrl: '',
-    gymHistory: 'Welcome to our gym! We are dedicated to helping you achieve your fitness goals.'
-  });
-
-  useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const response = await settingsAPI.get();
-        setSettings(response.data);
-      } catch (error) {
-        console.error('Failed to fetch settings:', error);
-      }
-    };
-
-    fetchSettings();
-  }, []);
-
   return (
-    <div className="min-h-screen">
-      {/* Hero Section with Video */}
+    <div className="min-h-screen bg-white">
+      {/* Hero Section with WhatsApp Video */}
       <section className="relative h-screen">
-        {settings.homeVideoUrl ? (
-          <video
-            autoPlay
-            muted
-            loop
-            className="w-full h-full object-cover"
-            poster="/placeholder-video.jpg"
-          >
-            <source src={settings.homeVideoUrl} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-primary-600 to-secondary-600 flex items-center justify-center">
-            <div className="text-center text-white">
-              <h1 className="text-6xl font-bold mb-4">GYMFLEX</h1>
-              <p className="text-xl">Transform Your Life Today</p>
-            </div>
-          </div>
-        )}
-        
+        <video
+          autoPlay
+          muted
+          loop
+          className="w-full h-full object-cover absolute inset-0 z-0"
+          poster="/logo.jpg"
+        >
+          <source src="/home-video.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
         {/* Overlay */}
-        <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-          <div className="text-center text-white max-w-4xl mx-auto px-4">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6">
+        <div className="absolute inset-0 flex items-center justify-center z-10">
+          <div className="text-center max-w-4xl mx-auto px-4">
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white drop-shadow-lg">
               Transform Your <span className="text-primary-400">Body</span>
             </h1>
-            <p className="text-xl md:text-2xl mb-8">
+            <p className="text-xl md:text-2xl mb-8 text-white drop-shadow-lg">
               Join the ultimate fitness experience with state-of-the-art equipment and expert trainers
             </p>
-            <button className="bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-colors duration-300 transform hover:scale-105">
+            <button className="bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-colors duration-300 transform hover:scale-105 shadow-lg">
               Start Your Journey
             </button>
           </div>
@@ -64,26 +35,24 @@ const Home = () => {
       <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Welcome to GymFlex</h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Welcome to Dube Boxing Club</h2>
             <div className="w-24 h-1 bg-primary-600 mx-auto"></div>
           </div>
-          
           <div className="prose prose-lg mx-auto text-gray-700 leading-relaxed">
             <p className="text-center text-lg">
-              {settings.gymHistory}
+              Welcome to our boxing club! We are dedicated to helping you achieve your fitness and boxing goals.
             </p>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose GymFlex?</h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose Dube Boxing Club?</h2>
             <div className="w-24 h-1 bg-primary-600 mx-auto"></div>
           </div>
-          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center p-6 bg-white rounded-lg shadow-md">
               <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -94,7 +63,6 @@ const Home = () => {
               <h3 className="text-xl font-semibold mb-2">State-of-the-Art Equipment</h3>
               <p className="text-gray-600">Access to the latest fitness equipment and technology to maximize your workout potential.</p>
             </div>
-            
             <div className="text-center p-6 bg-white rounded-lg shadow-md">
               <div className="w-16 h-16 bg-secondary-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-secondary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -104,7 +72,6 @@ const Home = () => {
               <h3 className="text-xl font-semibold mb-2">Expert Trainers</h3>
               <p className="text-gray-600">Certified personal trainers dedicated to helping you achieve your fitness goals safely and effectively.</p>
             </div>
-            
             <div className="text-center p-6 bg-white rounded-lg shadow-md">
               <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

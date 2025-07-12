@@ -9,10 +9,11 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
-            <h3 className="text-2xl font-bold mb-4">
-              <span className="text-primary-400">GYM</span>
-              <span className="text-secondary-400">FLEX</span>
-            </h3>
+            <img 
+              src="logo.jpg" 
+              alt="Logo" 
+              className="h-16 w-auto mb-4 rounded shadow"
+            />
             <p className="text-gray-300 mb-4">
               Transform your body and mind with our state-of-the-art facilities and expert trainers. 
               Join our community and achieve your fitness goals today.
@@ -69,17 +70,17 @@ const Footer = () => {
           <div>
             <h4 className="text-lg font-semibold mb-4">Contact Info</h4>
             <div className="space-y-2 text-gray-300">
-              <p>123 Gym Street</p>
-              <p>City, Country 12345</p>
-              <p>Phone: +1 234 567 890</p>
-              <p>Email: info@gymflex.com</p>
+              <p>Mahalefele road</p>
+              <p>johannesburg, south africa 1801</p>
+              <p>Phone: +27 76 662 3761</p>
+              <p>Email: klethiba25@gmail.com</p>
             </div>
           </div>
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center">
           <p className="text-gray-400">
-            © {new Date().getFullYear()} GymFlex. All rights reserved.
+            © {new Date().getFullYear()} Dube Boxing Club. All rights reserved.
           </p>
         </div>
       </div>

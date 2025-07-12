@@ -4,9 +4,9 @@ import { FaWhatsapp, FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock } from 'react-
 
 const Contact = () => {
   const [contactInfo, setContactInfo] = useState({
-    whatsapp: '+1234567890',
-    email: 'info@gymflex.com',
-    address: '123 Gym Street, City, Country'
+    whatsapp: '+27 76 662 3761',
+    email: 'klethiba25@gmail.com',
+    address: 'Mahalefele road, johannesburg, south africa 1801'
   });
   const [loading, setLoading] = useState(true);
 
@@ -26,7 +26,7 @@ const Contact = () => {
   }, []);
 
   const handleWhatsAppClick = () => {
-    const message = encodeURIComponent('Hello! I would like to know more about your gym services.');
+    const message = encodeURIComponent('Hello! I would like to know more about your boxing club services.');
     const whatsappUrl = `https://wa.me/${contactInfo.whatsapp.replace(/\D/g, '')}?text=${message}`;
     window.open(whatsappUrl, '_blank');
   };

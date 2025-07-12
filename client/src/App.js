@@ -1,70 +1,37 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { analyticsAPI } from './services/api';
-
-// Public Components
 import Navbar from './components/public/Navbar';
 import Footer from './components/public/Footer';
+import WhatsAppFloat from './components/public/WhatsAppFloat';
 import Home from './pages/Home';
 import Events from './pages/Events';
 import Gallery from './pages/Gallery';
 import Team from './pages/Team';
 import Contact from './pages/Contact';
-import WhatsAppFloat from './components/public/WhatsAppFloat';
-
-// Admin Components
-import AdminLogin from './pages/admin/AdminLogin';
+import AdminLogin from './components/admin/AdminLogin';
+import ProtectedRoute from './components/admin/ProtectedRoute';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminEvents from './pages/admin/AdminEvents';
 import AdminGallery from './pages/admin/AdminGallery';
 import AdminTeam from './pages/admin/AdminTeam';
-import AdminSettings from './pages/admin/AdminSettings';
 import AdminAnalytics from './pages/admin/AdminAnalytics';
-
-// Protected Route Component
-import ProtectedRoute from './components/admin/ProtectedRoute';
+import './App.css';
 
 function App() {
-  // Track page visits
   useEffect(() => {
-    const trackPageVisit = async () => {
-      const path = window.location.pathname;
-      let page = 'home';
-      
-      if (path.startsWith('/admin')) {
-        page = 'admin';
-      } else if (path === '/events') {
-        page = 'events';
-      } else if (path === '/gallery') {
-        page = 'gallery';
-      } else if (path === '/team') {
-        page = 'team';
-      } else if (path === '/contact') {
-        page = 'contact';
-      }
-      
-      try {
-        await analyticsAPI.track(page);
-      } catch (error) {
-        console.error('Failed to track page visit:', error);
-      }
+    // Track page views for analytics
+    const trackPageView = () => {
+      // You can implement analytics tracking here
+      console.log('Page viewed:', window.location.pathname);
     };
 
-    trackPageVisit();
-  }, [window.location.pathname]);
+    trackPageView();
+  }, []);
 
   return (
     <Router>
-      <div className="App min-h-screen bg-white">
+      <div className="App">
         <Routes>
-          {/* Admin Routes - No Login Required */}
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/events" element={<AdminEvents />} />
-          <Route path="/admin/gallery" element={<AdminGallery />} />
-          <Route path="/admin/team" element={<AdminTeam />} />
-          <Route path="/admin/settings" element={<AdminSettings />} />
-          <Route path="/admin/analytics" element={<AdminAnalytics />} />
-
           {/* Public Routes */}
           <Route path="/" element={
             <>
@@ -105,6 +72,34 @@ function App() {
               <Footer />
               <WhatsAppFloat />
             </>
+          } />
+
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/events" element={
+            <ProtectedRoute>
+              <AdminEvents />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/gallery" element={
+            <ProtectedRoute>
+              <AdminGallery />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/team" element={
+            <ProtectedRoute>
+              <AdminTeam />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/analytics" element={
+            <ProtectedRoute>
+              <AdminAnalytics />
+            </ProtectedRoute>
           } />
         </Routes>
       </div>

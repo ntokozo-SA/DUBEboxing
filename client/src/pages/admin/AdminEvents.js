@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AdminSidebar from '../../components/admin/AdminSidebar';
 import { eventsAPI } from '../../services/api';
-import { FaPlus, FaEdit, FaTrash, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
 
 const AdminEvents = () => {
   const [events, setEvents] = useState([]);
@@ -38,9 +38,9 @@ const AdminEvents = () => {
     formDataObj.append('date', formData.date);
     formDataObj.append('isActive', formData.isActive);
 
-    const fileInput = document.getElementById('posterImage');
+    const fileInput = document.getElementById('imageUrl');
     if (fileInput.files[0]) {
-      formDataObj.append('posterImage', fileInput.files[0]);
+      formDataObj.append('image', fileInput.files[0]);
     }
 
     try {
@@ -53,6 +53,7 @@ const AdminEvents = () => {
       resetForm();
     } catch (error) {
       console.error('Failed to save event:', error);
+      alert('Failed to save event. Please try again.');
     }
   };
 
@@ -76,8 +77,8 @@ const AdminEvents = () => {
   const editEvent = (event) => {
     setFormData({
       title: event.title,
-      description: event.description,
-      date: event.date.split('T')[0],
+      description: event.description || '',
+      date: event.date ? new Date(event.date).toISOString().split('T')[0] : '',
       isActive: event.isActive
     });
     setEditingEvent(event);
@@ -164,10 +165,9 @@ const AdminEvents = () => {
                   </label>
                   <input
                     type="file"
-                    id="posterImage"
+                    id="imageUrl"
                     accept="image/*"
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                    required={!editingEvent}
                   />
                 </div>
                 <div className="flex items-center">
@@ -187,7 +187,7 @@ const AdminEvents = () => {
                     type="submit"
                     className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg"
                   >
-                    {editingEvent ? 'Update Event' : 'Create Event'}
+                    {editingEvent ? 'Update Event' : 'Add Event'}
                   </button>
                   <button
                     type="button"
@@ -201,80 +201,71 @@ const AdminEvents = () => {
             </div>
           )}
 
-          {/* Events List */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">All Events</h2>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Poster
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Title
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Date
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {events.map((event) => (
-                    <tr key={event._id}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <img
-                          src={`http://localhost:5000${event.posterImage}`}
-                          alt={event.title}
-                          className="h-16 w-16 object-cover rounded-lg"
-                        />
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{event.title}</div>
-                        <div className="text-sm text-gray-500">{event.description}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {new Date(event.date).toLocaleDateString()}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                          event.isActive
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-red-100 text-red-800'
-                        }`}>
-                          {event.isActive ? 'Active' : 'Inactive'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex space-x-2">
-                          <button
-                            onClick={() => editEvent(event)}
-                            className="text-primary-600 hover:text-primary-900"
-                          >
-                            <FaEdit />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(event._id)}
-                            className="text-red-600 hover:text-red-900"
-                          >
-                            <FaTrash />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+          {/* Events Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {events.map((event) => (
+              <div key={event._id} className="bg-white rounded-lg shadow-md overflow-hidden">
+                <div className="relative h-48 overflow-hidden">
+                  {event.imageUrl ? (
+                    <img
+                      src={`http://localhost:5000${event.imageUrl}`}
+                      alt={event.title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.src = 'https://via.placeholder.com/300x200?text=No+Image';
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                      <span className="text-gray-500">No Image</span>
+                    </div>
+                  )}
+                  <div className="absolute top-2 right-2 flex space-x-1">
+                    <button
+                      onClick={() => editEvent(event)}
+                      className="bg-blue-600 text-white p-1 rounded hover:bg-blue-700"
+                    >
+                      <FaEdit size={12} />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(event._id)}
+                      className="bg-red-600 text-white p-1 rounded hover:bg-red-700"
+                    >
+                      <FaTrash size={12} />
+                    </button>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">{event.title}</h3>
+                  <p className="text-primary-600 font-medium mb-2">
+                    {new Date(event.date).toLocaleDateString()}
+                  </p>
+                  {event.description && (
+                    <p className="text-gray-600 text-sm mb-2">{event.description}</p>
+                  )}
+                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                    event.isActive
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-red-100 text-red-800'
+                  }`}>
+                    {event.isActive ? 'Active' : 'Inactive'}
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
+
+          {events.length === 0 && (
+            <div className="text-center py-12">
+              <div className="text-gray-400 mb-4">
+                <svg className="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No events</h3>
+              <p className="text-gray-500">Get started by adding your first event.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

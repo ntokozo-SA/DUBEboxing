@@ -68,18 +68,13 @@ const Events = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {events.map((event) => (
               <div key={event._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                {/* Event Image */}
-                <div className="relative h-64 overflow-hidden">
-                  <img
-                    src={`http://localhost:5000${event.posterImage}`}
-                    alt={event.title}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.target.src = '/placeholder-event.jpg';
-                    }}
-                  />
-                  <div className="absolute top-4 right-4 bg-primary-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                    {formatDate(event.date)}
+                {/* Event Header */}
+                <div className="relative h-32 bg-gradient-to-r from-primary-600 to-secondary-600 flex items-center justify-center">
+                  <div className="text-center text-white">
+                    <div className="text-2xl font-bold mb-2">{event.title}</div>
+                    <div className="text-sm bg-white bg-opacity-20 px-3 py-1 rounded-full">
+                      {formatDate(event.date)}
+                    </div>
                   </div>
                 </div>
 

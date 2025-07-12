@@ -112,7 +112,7 @@ const AdminSettings = () => {
                     onChange={(e) => setSettings({...settings, gymHistory: e.target.value})}
                     rows={6}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                    placeholder="Enter the gym's history and about information..."
+                    placeholder="Enter the boxing club's history and about information..."
                   />
                 </div>
 
@@ -159,7 +159,7 @@ const AdminSettings = () => {
                       contactInfo: {...settings.contactInfo, email: e.target.value}
                     })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                    placeholder="info@gymflex.com"
+                    placeholder="klethiba25@gmail.com"
                   />
                 </div>
 
@@ -175,7 +175,7 @@ const AdminSettings = () => {
                     })}
                     rows={3}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                    placeholder="123 Gym Street, City, Country"
+                    placeholder="Mahalefele road, johannesburg, south africa 1801"
                   />
                 </div>
 
@@ -196,7 +196,7 @@ const AdminSettings = () => {
             <h3 className="text-lg font-semibold text-blue-900 mb-4">Instructions</h3>
             <ul className="space-y-2 text-blue-800">
               <li>• <strong>Video URL:</strong> Add a direct link to an MP4 video file for the home page hero section</li>
-              <li>• <strong>Gym History:</strong> This text will appear on the gallery page and home page</li>
+              <li>• <strong>Boxing Club History:</strong> This text will appear on the gallery page and home page</li>
               <li>• <strong>WhatsApp:</strong> Include country code (e.g., +1 for US, +44 for UK)</li>
               <li>• <strong>Email:</strong> This will be used for contact forms and display</li>
               <li>• <strong>Address:</strong> Will be displayed on the contact page and footer</li>

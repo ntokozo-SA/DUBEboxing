@@ -3,7 +3,7 @@ import { FaWhatsapp, FaTimes } from 'react-icons/fa';
 import { contactAPI } from '../../services/api';
 
 const WhatsAppFloat = () => {
-  const [whatsappNumber, setWhatsappNumber] = useState('+1234567890');
+  const [whatsappNumber, setWhatsappNumber] = useState('+27 76 662 3761');
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -11,7 +11,7 @@ const WhatsAppFloat = () => {
     const getContactInfo = async () => {
       try {
         const response = await contactAPI.get();
-        setWhatsappNumber(response.data.whatsapp || '+1234567890');
+        setWhatsappNumber(response.data.whatsapp || '+27 76 662 3761');
       } catch (error) {
         console.error('Failed to fetch contact info:', error);
       }
@@ -28,7 +28,7 @@ const WhatsAppFloat = () => {
   }, []);
 
   const handleWhatsAppClick = () => {
-    const message = encodeURIComponent('Hello! I would like to know more about your gym services.');
+    const message = encodeURIComponent('Hello! I would like to know more about your boxing club services.');
     const whatsappUrl = `https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${message}`;
     window.open(whatsappUrl, '_blank');
   };
