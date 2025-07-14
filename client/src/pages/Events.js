@@ -69,13 +69,23 @@ const Events = () => {
             {events.map((event) => (
               <div key={event._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
                 {/* Event Header */}
-                <div className="relative h-32 bg-gradient-to-r from-primary-600 to-secondary-600 flex items-center justify-center">
-                  <div className="text-center text-white">
-                    <div className="text-2xl font-bold mb-2">{event.title}</div>
-                    <div className="text-sm bg-white bg-opacity-20 px-3 py-1 rounded-full">
-                      {formatDate(event.date)}
+                <div className="relative h-48 bg-gradient-to-r from-primary-600 to-secondary-600">
+                  {event.imageUrl ? (
+                    <img 
+                      src={event.imageUrl} 
+                      alt={event.title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center h-full">
+                      <div className="text-center text-white">
+                        <div className="text-2xl font-bold mb-2">{event.title}</div>
+                        <div className="text-sm bg-white bg-opacity-20 px-3 py-1 rounded-full">
+                          {formatDate(event.date)}
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
 
                 {/* Event Details */}

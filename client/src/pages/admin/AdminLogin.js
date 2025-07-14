@@ -26,8 +26,8 @@ const AdminLogin = () => {
 
     try {
       const response = await authAPI.login(formData);
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
+      localStorage.setItem('adminToken', response.data.token);
+      localStorage.setItem('adminUser', JSON.stringify(response.data.user));
       navigate('/admin');
     } catch (error) {
       setError(error.response?.data?.message || 'Login failed. Please try again.');

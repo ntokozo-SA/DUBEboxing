@@ -61,7 +61,7 @@ const Team = () => {
                 {/* Member Image */}
                 <div className="relative h-80 overflow-hidden">
                   <img
-                    src={`http://localhost:5000${member.imageUrl}`}
+                    src={member.imageUrl}
                     alt={member.name}
                     className="w-full h-full object-cover"
                     onError={(e) => {

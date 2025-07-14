@@ -84,6 +84,20 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Image at the bottom of the home page */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="text-center">
+            <img
+              src="/IMG-20250624-WA0003.jpg"
+              alt="Dube Boxing Club"
+              className="max-h-80 rounded-lg shadow-lg border-4 border-white bg-white mx-auto"
+              style={{ objectFit: 'contain' }}
+            />
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

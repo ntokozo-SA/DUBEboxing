@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/public/Navbar';
 import Footer from './components/public/Footer';
 import WhatsAppFloat from './components/public/WhatsAppFloat';
@@ -8,7 +8,7 @@ import Events from './pages/Events';
 import Gallery from './pages/Gallery';
 import Team from './pages/Team';
 import Contact from './pages/Contact';
-import AdminLogin from './components/admin/AdminLogin';
+import AdminLogin from './pages/admin/AdminLogin';
 import ProtectedRoute from './components/admin/ProtectedRoute';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminEvents from './pages/admin/AdminEvents';
@@ -76,6 +76,7 @@ function App() {
 
           {/* Admin Routes */}
           <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="/admin/dashboard" element={
             <ProtectedRoute>
               <AdminDashboard />

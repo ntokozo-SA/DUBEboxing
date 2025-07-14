@@ -13,7 +13,7 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static('uploads'));
+app.use('/uploads', express.static('uploads'));
 
 // Ensure uploads directory exists
 if (!fs.existsSync('uploads')) {
@@ -221,7 +221,7 @@ app.post('/api/events', auth, upload.single('image'), async (req, res) => {
     };
 
     if (req.file) {
-      eventData.imageUrl = `/uploads/${req.file.filename}`;
+      eventData.imageUrl = `http://localhost:5000/uploads/${req.file.filename}`;
     }
 
     const event = new Event(eventData);
@@ -256,7 +256,7 @@ app.put('/api/events/:id', auth, upload.single('image'), async (req, res) => {
           if (err) console.error('Error deleting old file:', err);
         });
       }
-      updateData.imageUrl = `/uploads/${req.file.filename}`;
+      updateData.imageUrl = `http://localhost:5000/uploads/${req.file.filename}`;
     }
 
     const updatedEvent = await Event.findByIdAndUpdate(req.params.id, updateData, { new: true });
@@ -320,7 +320,7 @@ app.post('/api/gallery', auth, upload.single('image'), async (req, res) => {
       description: req.body.description,
       category: req.body.category || 'gym',
       isActive: req.body.isActive === 'true' || req.body.isActive === true,
-      imageUrl: `/uploads/${req.file.filename}`
+      imageUrl: `http://localhost:5000/uploads/${req.file.filename}`
     };
 
     const item = new Gallery(galleryData);
@@ -353,7 +353,7 @@ app.put('/api/gallery/:id', auth, upload.single('image'), async (req, res) => {
       fs.unlink(oldFilePath, (err) => {
         if (err) console.error('Error deleting old file:', err);
       });
-      updateData.imageUrl = `/uploads/${req.file.filename}`;
+      updateData.imageUrl = `http://localhost:5000/uploads/${req.file.filename}`;
     }
 
     const updatedItem = await Gallery.findByIdAndUpdate(req.params.id, updateData, { new: true });
@@ -451,7 +451,7 @@ app.put('/api/team/:id', auth, upload.single('image'), async (req, res) => {
           if (err) console.error('Error deleting old file:', err);
         });
       }
-      updateData.imageUrl = `/uploads/${req.file.filename}`;
+      updateData.imageUrl = `http://localhost:5000/uploads/${req.file.filename}`;
     }
 
     const updatedMember = await Team.findByIdAndUpdate(req.params.id, updateData, { new: true });

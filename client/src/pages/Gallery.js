@@ -107,7 +107,7 @@ const Gallery = () => {
                 {/* Image */}
                 <div className="relative h-64 overflow-hidden">
                   <img
-                    src={`http://localhost:5000${item.imageUrl}`}
+                    src={item.imageUrl}
                     alt={item.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                     onError={(e) => {
