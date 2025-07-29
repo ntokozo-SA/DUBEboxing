@@ -178,13 +178,3 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log('✅ Admin login: admin@gym.com / admin123');
 }); 
-
-const path = require('path');
-
-// Serve static files from the React frontend
-app.use(express.static(path.join(__dirname, 'client/build')));
-
-// For any route not handled by Express, serve the React app
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-});
