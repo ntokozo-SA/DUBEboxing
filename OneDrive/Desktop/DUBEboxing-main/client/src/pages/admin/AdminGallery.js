@@ -24,7 +24,7 @@ const AdminGallery = () => {
       const response = await galleryAPI.getAllAdmin();
       // Only update if data is different
       if (JSON.stringify(response.data) !== JSON.stringify(gallery)) {
-        setGallery(response.data);
+      setGallery(response.data);
       }
     } catch (error) {
       console.error('Failed to fetch gallery:', error);
@@ -214,20 +214,20 @@ const AdminGallery = () => {
               <div key={item._id} className="bg-white rounded-lg shadow-md overflow-hidden">
                 <div className="relative h-48 overflow-hidden">
                   {item.imageUrl ? (
-                    <img
-                      src={`http://localhost:5000${item.imageUrl}`}
-                      alt={item.title}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
+                  <img
+                    src={`http://localhost:5000${item.imageUrl}`}
+                    alt={item.title}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
                         if (!e.target.src.endsWith('/placeholder.jpg')) {
                           e.target.src = '/placeholder.jpg';
                         }
-                      }}
-                    />
+                    }}
+                  />
                   ) : (
                     <div className="w-full h-full bg-gray-200 flex items-center justify-center">
                       <span className="text-gray-500">No Image</span>
-                    </div>
+                  </div>
                   )}
                   <div className="absolute top-2 right-2 flex space-x-1">
                     <button
@@ -251,13 +251,13 @@ const AdminGallery = () => {
                     <p className="text-gray-600 text-sm mb-2">{item.description}</p>
                   )}
                   <div className="flex justify-between items-center">
-                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                      item.isActive
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {item.isActive ? 'Active' : 'Inactive'}
-                    </span>
+                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                    item.isActive
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-red-100 text-red-800'
+                  }`}>
+                    {item.isActive ? 'Active' : 'Inactive'}
+                  </span>
                   </div>
                 </div>
               </div>

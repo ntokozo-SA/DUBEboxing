@@ -176,5 +176,5 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log('✅ Admin login: admin@gym.com / admin123');
+  console.log('✅ Admin login: klethiba25@gmail.com / admin123');
 }); 
