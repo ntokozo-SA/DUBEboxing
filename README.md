@@ -1,4 +1,4 @@
-# GymFlex - Full-Stack Gym Website
+# Dubeboxingclub - Full-Stack Gym Website
 
 A modern, responsive gym website built with React, Node.js, Express, and MongoDB. Features a public website with admin dashboard for content management.
 
@@ -130,9 +130,7 @@ gym-website/
 
 8. **Access the application**
    - Public website: http://localhost:3000
-   - Admin dashboard: http://localhost:3000/admin
-   - Admin login: admin@gym.com / admin123
-
+   - Admin dashboard: http://localhost:3000/admin/login
 ## 📊 Database Models
 
 ### User
