@@ -174,10 +174,10 @@ app.put('/api/settings', auth, (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.use('/admin', express.static(path.join(__dirname, 'client_admin/build')));
+app.use(express.static(path.join(__dirname, 'client/build')));
 
-app.get('/admin/*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client_admin/build', 'index.html'));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
 });
 
 
