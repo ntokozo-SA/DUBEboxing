@@ -108,20 +108,27 @@ app.get('/api/events', async (req, res) => {
 
 app.post('/api/events', auth, upload.single('image'), async (req, res) => {
   try {
+    console.log('Event upload request received');
+    console.log('Request body:', req.body);
+    console.log('Request file:', req.file);
+    
     const eventData = {
       title: req.body.title,
       description: req.body.description,
       date: req.body.date,
-      time: req.body.time,
-      location: req.body.location,
-      imageUrl: req.file ? `/uploads/${req.file.filename}` : req.body.imageUrl
+      isActive: req.body.isActive === 'true' || req.body.isActive === true,
+      posterImage: req.file ? `/uploads/${req.file.filename}` : req.body.imageUrl
     };
+    
+    console.log('Event data to save:', eventData);
     
     const event = new Event(eventData);
     await event.save();
+    console.log('Event saved successfully:', event);
     res.json(event);
   } catch (error) {
     console.error('Event upload error:', error);
+    console.error('Error stack:', error.stack);
     res.status(500).json({ message: 'Failed to save event. Please try again.' });
   }
 });
@@ -132,14 +139,13 @@ app.put('/api/events/:id', auth, upload.single('image'), async (req, res) => {
       title: req.body.title,
       description: req.body.description,
       date: req.body.date,
-      time: req.body.time,
-      location: req.body.location
+      isActive: req.body.isActive === 'true' || req.body.isActive === true
     };
     
     if (req.file) {
-      updateData.imageUrl = `/uploads/${req.file.filename}`;
+      updateData.posterImage = `/uploads/${req.file.filename}`;
     } else if (req.body.imageUrl) {
-      updateData.imageUrl = req.body.imageUrl;
+      updateData.posterImage = req.body.imageUrl;
     }
     
     const event = await Event.findByIdAndUpdate(
