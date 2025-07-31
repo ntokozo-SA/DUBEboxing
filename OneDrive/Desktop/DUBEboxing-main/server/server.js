@@ -192,6 +192,8 @@ app.post('/api/gallery', auth, upload.single('image'), async (req, res) => {
     const galleryData = {
       title: req.body.title,
       description: req.body.description,
+      category: req.body.category || 'gym',
+      isActive: req.body.isActive === 'true' || req.body.isActive === true,
       imageUrl: req.file ? `/uploads/${req.file.filename}` : req.body.imageUrl
     };
     
@@ -205,6 +207,38 @@ app.post('/api/gallery', auth, upload.single('image'), async (req, res) => {
     console.error('Gallery upload error:', error);
     console.error('Error stack:', error.stack);
     res.status(500).json({ message: 'Failed to save gallery item. Please try again.' });
+  }
+});
+
+app.put('/api/gallery/:id', auth, upload.single('image'), async (req, res) => {
+  try {
+    const updateData = {
+      title: req.body.title,
+      description: req.body.description,
+      category: req.body.category || 'gym',
+      isActive: req.body.isActive === 'true' || req.body.isActive === true
+    };
+    
+    if (req.file) {
+      updateData.imageUrl = `/uploads/${req.file.filename}`;
+    } else if (req.body.imageUrl) {
+      updateData.imageUrl = req.body.imageUrl;
+    }
+    
+    const item = await Gallery.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true, runValidators: true }
+    );
+    
+    if (!item) {
+      return res.status(404).json({ message: 'Gallery item not found' });
+    }
+    
+    res.json(item);
+  } catch (error) {
+    console.error('Gallery update error:', error);
+    res.status(500).json({ message: 'Failed to update gallery item. Please try again.' });
   }
 });
 
