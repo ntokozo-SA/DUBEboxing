@@ -14,10 +14,14 @@ const Gallery = () => {
           galleryAPI.getAll(),
           settingsAPI.get()
         ]);
-        setGallery(galleryResponse.data);
-        setSettings(settingsResponse.data);
+        const galleryData = Array.isArray(galleryResponse.data) ? galleryResponse.data : [];
+        console.log('Gallery data received:', galleryResponse.data);
+        setGallery(galleryData);
+        setSettings(settingsResponse.data || {});
       } catch (error) {
         console.error('Failed to fetch data:', error);
+        setGallery([]); // Set empty array on error
+        setSettings({});
       } finally {
         setLoading(false);
       }
@@ -102,16 +106,16 @@ const Gallery = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredGallery.map((item) => (
+            {Array.isArray(filteredGallery) && filteredGallery.map((item) => (
               <div key={item._id} className="group relative bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
                 {/* Image */}
                 <div className="relative h-64 overflow-hidden">
                   <img
-                    src={item.imageUrl}
+                    src={`https://dubeboxing.onrender.com${item.imageUrl}`}
                     alt={item.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                     onError={(e) => {
-                      e.target.src = '/placeholder-gallery.jpg';
+                      e.target.src = 'https://via.placeholder.com/300x200?text=Image+Not+Found';
                     }}
                   />
                   

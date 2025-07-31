@@ -9,9 +9,12 @@ const Events = () => {
     const fetchEvents = async () => {
       try {
         const response = await eventsAPI.getAll();
-        setEvents(response.data);
+        const eventsData = Array.isArray(response.data) ? response.data : [];
+        console.log('Events data received:', response.data);
+        setEvents(eventsData);
       } catch (error) {
         console.error('Failed to fetch events:', error);
+        setEvents([]); // Set empty array on error
       } finally {
         setLoading(false);
       }
@@ -66,13 +69,13 @@ const Events = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {events.map((event) => (
+            {Array.isArray(events) && events.map((event) => (
               <div key={event._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
                 {/* Event Header */}
                 <div className="relative h-48 bg-gradient-to-r from-primary-600 to-secondary-600">
-                  {event.imageUrl ? (
+                  {event.posterImage ? (
                     <img 
-                      src={event.imageUrl} 
+                      src={`https://dubeboxing.onrender.com${event.posterImage}`} 
                       alt={event.title}
                       className="w-full h-full object-cover"
                     />
