@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const mongoose = require('mongoose');
+const upload = require('./middleware/upload');
 require('dotenv').config({ path: './config.env' });
 
 const app = express();
@@ -97,21 +98,45 @@ app.get('/api/events', async (req, res) => {
   }
 });
 
-app.post('/api/events', auth, async (req, res) => {
+app.post('/api/events', auth, upload.single('image'), async (req, res) => {
   try {
-    const event = new Event(req.body);
+    const eventData = {
+      title: req.body.title,
+      description: req.body.description,
+      date: req.body.date,
+      time: req.body.time,
+      location: req.body.location,
+      imageUrl: req.file ? `/uploads/${req.file.filename}` : req.body.imageUrl
+    };
+    
+    const event = new Event(eventData);
     await event.save();
     res.json(event);
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Event upload error:', error);
+    res.status(500).json({ message: 'Failed to save event. Please try again.' });
   }
 });
 
-app.put('/api/events/:id', auth, async (req, res) => {
+app.put('/api/events/:id', auth, upload.single('image'), async (req, res) => {
   try {
+    const updateData = {
+      title: req.body.title,
+      description: req.body.description,
+      date: req.body.date,
+      time: req.body.time,
+      location: req.body.location
+    };
+    
+    if (req.file) {
+      updateData.imageUrl = `/uploads/${req.file.filename}`;
+    } else if (req.body.imageUrl) {
+      updateData.imageUrl = req.body.imageUrl;
+    }
+    
     const event = await Event.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       { new: true, runValidators: true }
     );
     
@@ -121,7 +146,8 @@ app.put('/api/events/:id', auth, async (req, res) => {
     
     res.json(event);
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Event update error:', error);
+    res.status(500).json({ message: 'Failed to update event. Please try again.' });
   }
 });
 
@@ -149,13 +175,20 @@ app.get('/api/gallery', async (req, res) => {
   }
 });
 
-app.post('/api/gallery', auth, async (req, res) => {
+app.post('/api/gallery', auth, upload.single('image'), async (req, res) => {
   try {
-    const item = new Gallery(req.body);
+    const galleryData = {
+      title: req.body.title,
+      description: req.body.description,
+      imageUrl: req.file ? `/uploads/${req.file.filename}` : req.body.imageUrl
+    };
+    
+    const item = new Gallery(galleryData);
     await item.save();
     res.json(item);
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Gallery upload error:', error);
+    res.status(500).json({ message: 'Failed to save gallery item. Please try again.' });
   }
 });
 
@@ -183,21 +216,41 @@ app.get('/api/team', async (req, res) => {
   }
 });
 
-app.post('/api/team', auth, async (req, res) => {
+app.post('/api/team', auth, upload.single('image'), async (req, res) => {
   try {
-    const member = new Team(req.body);
+    const teamData = {
+      name: req.body.name,
+      position: req.body.position,
+      bio: req.body.bio,
+      imageUrl: req.file ? `/uploads/${req.file.filename}` : req.body.imageUrl
+    };
+    
+    const member = new Team(teamData);
     await member.save();
     res.json(member);
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Team upload error:', error);
+    res.status(500).json({ message: 'Failed to save team member. Please try again.' });
   }
 });
 
-app.put('/api/team/:id', auth, async (req, res) => {
+app.put('/api/team/:id', auth, upload.single('image'), async (req, res) => {
   try {
+    const updateData = {
+      name: req.body.name,
+      position: req.body.position,
+      bio: req.body.bio
+    };
+    
+    if (req.file) {
+      updateData.imageUrl = `/uploads/${req.file.filename}`;
+    } else if (req.body.imageUrl) {
+      updateData.imageUrl = req.body.imageUrl;
+    }
+    
     const member = await Team.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       { new: true, runValidators: true }
     );
     
@@ -207,7 +260,8 @@ app.put('/api/team/:id', auth, async (req, res) => {
     
     res.json(member);
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Team update error:', error);
+    res.status(500).json({ message: 'Failed to update team member. Please try again.' });
   }
 });
 
