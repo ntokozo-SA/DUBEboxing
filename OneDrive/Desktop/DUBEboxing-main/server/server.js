@@ -2,8 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
 require('dotenv').config({ path: './config.env' });
 
 const app = express();
@@ -43,7 +41,6 @@ mongoose.connect(process.env.MONGODB_URI, {
 });
 
 // Import models
-const User = require('./models/User');
 const Event = require('./models/Event');
 const Gallery = require('./models/Gallery');
 const Team = require('./models/Team');
@@ -57,25 +54,7 @@ const auth = async (req, res, next) => {
   next();
 };
 
-// Initialize default admin user if none exists
-const initializeAdminUser = async () => {
-  try {
-    const adminExists = await User.findOne({ email: process.env.ADMIN_EMAIL || 'admin@gym.com' });
-    if (!adminExists) {
-      const adminUser = new User({
-        email: process.env.ADMIN_EMAIL || 'admin@gym.com',
-        password: process.env.ADMIN_PASSWORD || 'admin123',
-        role: 'admin'
-      });
-      await adminUser.save();
-      console.log('✅ Default admin user created');
-    } else {
-      console.log('✅ Admin user already exists');
-    }
-  } catch (error) {
-    console.error('❌ Error creating admin user:', error);
-  }
-};
+
 
 // Initialize default settings if none exist
 const initializeSettings = async () => {
@@ -106,57 +85,7 @@ const initializeSettings = async () => {
   }
 };
 
-// Auth routes
-app.post('/api/auth/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    
-    // Find user by email
-    const user = await User.findOne({ email: email.toLowerCase() });
-    if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
 
-    // Check password
-    const isPasswordValid = await user.comparePassword(password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
-
-    // Generate JWT token
-    const token = jwt.sign(
-      { userId: user._id, email: user.email, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: '24h' }
-    );
-
-    res.json({
-      token,
-      user: { 
-        id: user._id, 
-        email: user.email, 
-        role: user.role 
-      }
-    });
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-app.get('/api/auth/me', auth, async (req, res) => {
-  try {
-    res.json({ 
-      user: { 
-        id: req.user._id, 
-        email: req.user.email, 
-        role: req.user.role 
-      } 
-    });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-});
 
 // Events routes
 app.get('/api/events', async (req, res) => {
@@ -382,10 +311,5 @@ app.listen(PORT, async () => {
   console.log(`🚀 Server starting on port ${PORT}`);
   console.log(`🌐 Server URL: http://localhost:${PORT}`);
   console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`📊 Admin login: ${process.env.ADMIN_EMAIL || 'admin@gym.com'} / ${process.env.ADMIN_PASSWORD || 'admin123'}`);
-  
-  // Initialize admin user after a short delay to ensure MongoDB is connected
-  setTimeout(() => {
-    initializeAdminUser();
-  }, 1000);
+  console.log(`📊 Admin panel accessible without login`);
 }); 

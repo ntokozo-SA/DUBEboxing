@@ -9,10 +9,7 @@ const api = axios.create({
   },
 });
 
-// Get token from localStorage
-const getToken = () => {
-  return localStorage.getItem('adminToken');
-};
+
 
 // Request interceptor - bypass authentication
 api.interceptors.request.use(
@@ -35,12 +32,7 @@ api.interceptors.response.use(
   }
 );
 
-// Auth API
-export const authAPI = {
-  login: (credentials) => api.post('/auth/login', credentials),
-  getMe: () => api.get('/auth/me'),
-  initAdmin: () => api.post('/auth/init'),
-};
+
 
 // Events API
 export const eventsAPI = {
