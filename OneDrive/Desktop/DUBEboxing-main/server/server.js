@@ -2,10 +2,18 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const mongoose = require('mongoose');
+const fs = require('fs');
 const upload = require('./middleware/upload');
 require('dotenv').config({ path: './config.env' });
 
 const app = express();
+
+// Create uploads directory if it doesn't exist
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+  console.log('✅ Created uploads directory');
+}
 
 // Middleware
 app.use(cors());
@@ -177,17 +185,25 @@ app.get('/api/gallery', async (req, res) => {
 
 app.post('/api/gallery', auth, upload.single('image'), async (req, res) => {
   try {
+    console.log('Gallery upload request received');
+    console.log('Request body:', req.body);
+    console.log('Request file:', req.file);
+    
     const galleryData = {
       title: req.body.title,
       description: req.body.description,
       imageUrl: req.file ? `/uploads/${req.file.filename}` : req.body.imageUrl
     };
     
+    console.log('Gallery data to save:', galleryData);
+    
     const item = new Gallery(galleryData);
     await item.save();
+    console.log('Gallery item saved successfully:', item);
     res.json(item);
   } catch (error) {
     console.error('Gallery upload error:', error);
+    console.error('Error stack:', error.stack);
     res.status(500).json({ message: 'Failed to save gallery item. Please try again.' });
   }
 });
