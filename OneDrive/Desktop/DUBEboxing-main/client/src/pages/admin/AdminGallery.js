@@ -22,12 +22,16 @@ const AdminGallery = () => {
   const fetchGallery = async () => {
     try {
       const response = await galleryAPI.getAllAdmin();
+      // Ensure response.data is an array before setting it
+      const galleryData = Array.isArray(response.data) ? response.data : [];
+      console.log('Gallery data received:', response.data);
       // Only update if data is different
-      if (JSON.stringify(response.data) !== JSON.stringify(gallery)) {
-      setGallery(response.data);
+      if (JSON.stringify(galleryData) !== JSON.stringify(gallery)) {
+        setGallery(galleryData);
       }
     } catch (error) {
       console.error('Failed to fetch gallery:', error);
+      setGallery([]); // Set empty array on error
     } finally {
       setLoading(false);
     }
@@ -210,7 +214,7 @@ const AdminGallery = () => {
 
           {/* Gallery Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {gallery.map((item) => (
+            {Array.isArray(gallery) && gallery.map((item) => (
               <div key={item._id} className="bg-white rounded-lg shadow-md overflow-hidden">
                 <div className="relative h-48 overflow-hidden">
                   {item.imageUrl ? (

@@ -51,7 +51,7 @@ export const eventsAPI = {
 // Gallery API
 export const galleryAPI = {
   getAll: () => api.get('/gallery'),
-  getAllAdmin: () => api.get('/gallery/admin'),
+  getAllAdmin: () => api.get('/gallery'), // Use same endpoint as getAll since no admin-specific route exists
   create: (formData) => api.post('/gallery', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   }),
