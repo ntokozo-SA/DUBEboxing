@@ -26,8 +26,38 @@ app.get('/health', (req, res) => {
     status: 'OK', 
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
-    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    mongodbState: mongoose.connection.readyState,
+    mongodbHost: process.env.MONGODB_URI ? process.env.MONGODB_URI.split('@')[1]?.split('/')[0] : 'not set'
   });
+});
+
+// MongoDB test endpoint
+app.get('/test-mongodb', async (req, res) => {
+  try {
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(500).json({ 
+        error: 'MongoDB not connected',
+        state: mongoose.connection.readyState,
+        message: 'Database connection is not ready'
+      });
+    }
+    
+    // Test a simple database operation
+    const testResult = await mongoose.connection.db.admin().ping();
+    res.json({ 
+      success: true, 
+      message: 'MongoDB connection is working',
+      ping: testResult,
+      database: process.env.MONGODB_URI.split('/').pop()
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      error: 'MongoDB test failed',
+      message: error.message,
+      state: mongoose.connection.readyState
+    });
+  }
 });
 
 // MongoDB Connection
@@ -35,9 +65,16 @@ console.log('🔍 Attempting to connect to MongoDB...');
 console.log('🔍 MONGODB_URI:', process.env.MONGODB_URI ? 'Set' : 'NOT SET');
 console.log('🔍 NODE_ENV:', process.env.NODE_ENV || 'development');
 
+if (!process.env.MONGODB_URI) {
+  console.error('❌ MONGODB_URI is not set in environment variables');
+  process.exit(1);
+}
+
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+  socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
 })
 .then(() => {
   console.log('✅ Connected to MongoDB successfully');
@@ -46,6 +83,7 @@ mongoose.connect(process.env.MONGODB_URI, {
 .catch((err) => {
   console.error('❌ MongoDB connection error:', err.message);
   console.error('❌ Full error:', err);
+  console.error('❌ Please check your MongoDB Atlas connection string and network access');
   // Don't exit the process, let it continue to show other errors
 });
 
