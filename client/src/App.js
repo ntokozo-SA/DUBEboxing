@@ -8,7 +8,7 @@ import Events from './pages/Events';
 import Gallery from './pages/Gallery';
 import Team from './pages/Team';
 import Contact from './pages/Contact';
-import AdminLogin from './pages/admin/AdminLogin';
+// import AdminLogin from './pages/admin/AdminLogin';
 import ProtectedRoute from './components/admin/ProtectedRoute';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminEvents from './pages/admin/AdminEvents';
@@ -75,7 +75,7 @@ function App() {
           } />
 
           {/* Admin Routes */}
-          <Route path="/admin/login" element={<AdminLogin />} />
+          // <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="/admin/dashboard" element={
             <ProtectedRoute>
