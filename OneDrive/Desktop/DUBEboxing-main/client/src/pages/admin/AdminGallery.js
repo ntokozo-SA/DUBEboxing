@@ -215,7 +215,7 @@ const AdminGallery = () => {
                 <div className="relative h-48 overflow-hidden">
                   {item.imageUrl ? (
                   <img
-                    src={`http://localhost:5000${item.imageUrl}`}
+                    src={`https://dubeboxing.onrender.com${item.imageUrl}`}
                     alt={item.title}
                     className="w-full h-full object-cover"
                     onError={(e) => {

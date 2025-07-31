@@ -208,7 +208,7 @@ const AdminEvents = () => {
                 <div className="relative h-48 overflow-hidden">
                   {event.imageUrl ? (
                     <img
-                      src={`http://localhost:5000${event.imageUrl}`}
+                      src={`https://dubeboxing.onrender.com${event.imageUrl}`}
                       alt={event.title}
                       className="w-full h-full object-cover"
                       onError={(e) => {

@@ -224,7 +224,7 @@ const AdminTeam = () => {
                 <div className="relative h-48 overflow-hidden">
                   {member.imageUrl ? (
                     <img
-                      src={`http://localhost:5000${member.imageUrl}`}
+                      src={`https://dubeboxing.onrender.com${member.imageUrl}`}
                       alt={member.name}
                       className="w-full h-full object-cover"
                       onError={(e) => {

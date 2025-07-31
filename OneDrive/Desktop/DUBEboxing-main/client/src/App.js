@@ -75,7 +75,6 @@ function App() {
           } />
 
           {/* Admin Routes */}
-          <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="/admin/dashboard" element={
             <ProtectedRoute>

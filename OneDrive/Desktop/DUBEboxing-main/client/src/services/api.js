@@ -14,13 +14,10 @@ const getToken = () => {
   return localStorage.getItem('adminToken');
 };
 
-// Request interceptor
+// Request interceptor - bypass authentication
 api.interceptors.request.use(
   (config) => {
-    const token = getToken();
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+    // Skip authentication - allow all requests
     return config;
   },
   (error) => {
@@ -28,15 +25,12 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor to handle auth errors
+// Response interceptor - simplified error handling
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('adminToken');
-      localStorage.removeItem('adminUser');
-      window.location.href = '/admin/login';
-    }
+    // Just log errors, don't redirect to login
+    console.error('API Error:', error);
     return Promise.reject(error);
   }
 );
