@@ -4,7 +4,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-require('dotenv').config();
+require('dotenv').config({ path: './config.env' });
 
 const app = express();
 
@@ -13,17 +13,33 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('uploads'));
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+  });
+});
+
 // MongoDB Connection
-mongoose.connect(process.env.MONGO_URI, {
+console.log('🔍 Attempting to connect to MongoDB...');
+console.log('🔍 MONGODB_URI:', process.env.MONGODB_URI ? 'Set' : 'NOT SET');
+console.log('🔍 NODE_ENV:', process.env.NODE_ENV || 'development');
+
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
 .then(() => {
-  console.log('✅ Connected to MongoDB');
+  console.log('✅ Connected to MongoDB successfully');
+  console.log('✅ Database:', process.env.MONGODB_URI.split('/').pop());
 })
 .catch((err) => {
-  console.error('❌ MongoDB connection error:', err);
-  process.exit(1);
+  console.error('❌ MongoDB connection error:', err.message);
+  console.error('❌ Full error:', err);
+  // Don't exit the process, let it continue to show other errors
 });
 
 // Import models
@@ -60,15 +76,17 @@ const auth = async (req, res, next) => {
 // Initialize default admin user if none exists
 const initializeAdminUser = async () => {
   try {
-    const adminExists = await User.findOne({ email: 'admin@gym.com' });
+    const adminExists = await User.findOne({ email: process.env.ADMIN_EMAIL || 'admin@gym.com' });
     if (!adminExists) {
       const adminUser = new User({
-        email: 'admin@gym.com',
-        password: 'admin123',
+        email: process.env.ADMIN_EMAIL || 'admin@gym.com',
+        password: process.env.ADMIN_PASSWORD || 'admin123',
         role: 'admin'
       });
       await adminUser.save();
       console.log('✅ Default admin user created');
+    } else {
+      console.log('✅ Admin user already exists');
     }
   } catch (error) {
     console.error('❌ Error creating admin user:', error);
@@ -377,12 +395,13 @@ app.post('/api/contact', async (req, res) => {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, async () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🚀 Server starting on port ${PORT}`);
+  console.log(`🌐 Server URL: http://localhost:${PORT}`);
+  console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`📊 Admin login: ${process.env.ADMIN_EMAIL || 'admin@gym.com'} / ${process.env.ADMIN_PASSWORD || 'admin123'}`);
   
-  // Initialize default data
-  await initializeAdminUser();
-  await initializeSettings();
-  
-  console.log('✅ Admin login: admin@gym.com / admin123');
-  console.log('✅ MongoDB connected and ready');
+  // Initialize admin user after a short delay to ensure MongoDB is connected
+  setTimeout(() => {
+    initializeAdminUser();
+  }, 1000);
 }); 
