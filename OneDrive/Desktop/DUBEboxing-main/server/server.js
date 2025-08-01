@@ -420,6 +420,12 @@ app.post('/api/contact', async (req, res) => {
 
 // Catch-all handler: send back React's index.html file for any non-API routes
 app.get('*', (req, res) => {
+  // Don't serve React app for API routes
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ message: 'API endpoint not found' });
+  }
+  
+  // Serve React app for all other routes
   res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 
