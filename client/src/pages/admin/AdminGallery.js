@@ -41,18 +41,32 @@ const AdminGallery = () => {
     const fileInput = document.getElementById('imageUrl');
     if (fileInput.files[0]) {
       formDataObj.append('imageUrl', fileInput.files[0]);
+      console.log('File selected:', fileInput.files[0].name, 'Size:', fileInput.files[0].size);
+    } else {
+      console.log('No file selected');
     }
+
+    console.log('Form data being sent:', {
+      title: formData.title,
+      description: formData.description,
+      category: formData.category,
+      isActive: formData.isActive,
+      hasFile: !!fileInput.files[0]
+    });
 
     try {
       if (editingItem) {
+        console.log('Updating existing item:', editingItem._id);
         await galleryAPI.update(editingItem._id, formDataObj);
       } else {
+        console.log('Creating new item');
         await galleryAPI.create(formDataObj);
       }
       fetchGallery();
       resetForm();
     } catch (error) {
       console.error('Failed to save gallery item:', error);
+      console.error('Error response:', error.response?.data);
       alert('Failed to save gallery item. Please try again.');
     }
   };

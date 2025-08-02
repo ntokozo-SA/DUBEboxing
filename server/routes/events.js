@@ -1,4 +1,5 @@
 const express = require('express');
+const fs = require('fs');
 const Event = require('../models/Event');
 const auth = require('../middleware/auth');
 const upload = require('../middleware/upload');
@@ -25,7 +26,7 @@ router.get('/admin', auth, async (req, res) => {
 });
 
 // Create event (admin)
-router.post('/', auth, upload.single('posterImage'), async (req, res) => {
+router.post('/', auth, upload, async (req, res) => {
   try {
     const { title, description, date } = req.body;
     
@@ -33,14 +34,22 @@ router.post('/', auth, upload.single('posterImage'), async (req, res) => {
       return res.status(400).json({ message: 'Poster image is required' });
     }
 
+    // Convert file to base64 for storage
+    const imageBuffer = fs.readFileSync(req.file.path);
+    const base64Image = `data:${req.file.mimetype};base64,${imageBuffer.toString('base64')}`;
+
     const event = new Event({
       title,
       description,
-      posterImage: `/uploads/${req.file.filename}`,
+      posterImage: base64Image,
       date: new Date(date)
     });
 
     await event.save();
+    
+    // Clean up the temporary file
+    fs.unlinkSync(req.file.path);
+    
     res.status(201).json(event);
   } catch (error) {
     console.error('Create event error:', error);
@@ -49,13 +58,19 @@ router.post('/', auth, upload.single('posterImage'), async (req, res) => {
 });
 
 // Update event (admin)
-router.put('/:id', auth, upload.single('posterImage'), async (req, res) => {
+router.put('/:id', auth, upload, async (req, res) => {
   try {
     const { title, description, date, isActive } = req.body;
     const updateData = { title, description, date: new Date(date), isActive };
 
     if (req.file) {
-      updateData.posterImage = `/uploads/${req.file.filename}`;
+      // Convert file to base64 for storage
+      const imageBuffer = fs.readFileSync(req.file.path);
+      const base64Image = `data:${req.file.mimetype};base64,${imageBuffer.toString('base64')}`;
+      updateData.posterImage = base64Image;
+      
+      // Clean up the temporary file
+      fs.unlinkSync(req.file.path);
     }
 
     const event = await Event.findByIdAndUpdate(

@@ -14,7 +14,6 @@ mongoose.connect(process.env.MONGODB_URI)
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static('uploads'));
 
 console.log('PORT:', process.env.PORT);
 
@@ -26,6 +25,15 @@ const teamRoutes = require('./routes/team');
 const contactRoutes = require('./routes/contact');
 const analyticsRoutes = require('./routes/analytics');
 const settingsRoutes = require('./routes/settings');
+
+// Health check route
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    message: 'Server is running'
+  });
+});
 
 // Use routes
 app.use('/api/auth', authRoutes);

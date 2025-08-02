@@ -1,4 +1,5 @@
 const express = require('express');
+const fs = require('fs');
 const Team = require('../models/Team');
 const auth = require('../middleware/auth');
 const upload = require('../middleware/upload');
@@ -25,7 +26,7 @@ router.get('/admin', auth, async (req, res) => {
 });
 
 // Create team member (admin)
-router.post('/', auth, upload.single('imageUrl'), async (req, res) => {
+router.post('/', auth, upload, async (req, res) => {
   try {
     const { name, position, description, order } = req.body;
     
@@ -33,15 +34,23 @@ router.post('/', auth, upload.single('imageUrl'), async (req, res) => {
       return res.status(400).json({ message: 'Image is required' });
     }
 
+    // Convert file to base64 for storage
+    const imageBuffer = fs.readFileSync(req.file.path);
+    const base64Image = `data:${req.file.mimetype};base64,${imageBuffer.toString('base64')}`;
+
     const teamMember = new Team({
       name,
       position,
       description,
-      imageUrl: `/uploads/${req.file.filename}`,
+      imageUrl: base64Image,
       order: order || 0
     });
 
     await teamMember.save();
+    
+    // Clean up the temporary file
+    fs.unlinkSync(req.file.path);
+    
     res.status(201).json(teamMember);
   } catch (error) {
     console.error('Create team error:', error);
@@ -50,13 +59,19 @@ router.post('/', auth, upload.single('imageUrl'), async (req, res) => {
 });
 
 // Update team member (admin)
-router.put('/:id', auth, upload.single('imageUrl'), async (req, res) => {
+router.put('/:id', auth, upload, async (req, res) => {
   try {
     const { name, position, description, order, isActive } = req.body;
     const updateData = { name, position, description, order, isActive };
 
     if (req.file) {
-      updateData.imageUrl = `/uploads/${req.file.filename}`;
+      // Convert file to base64 for storage
+      const imageBuffer = fs.readFileSync(req.file.path);
+      const base64Image = `data:${req.file.mimetype};base64,${imageBuffer.toString('base64')}`;
+      updateData.imageUrl = base64Image;
+      
+      // Clean up the temporary file
+      fs.unlinkSync(req.file.path);
     }
 
     const teamMember = await Team.findByIdAndUpdate(
