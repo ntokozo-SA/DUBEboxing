@@ -42,7 +42,7 @@ const AdminTeam = () => {
 
     const fileInput = document.getElementById('imageUrl');
     if (fileInput.files[0]) {
-      formDataObj.append('image', fileInput.files[0]);
+      formDataObj.append('imageUrl', fileInput.files[0]);
     }
 
     try {
