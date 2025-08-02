@@ -20,22 +20,12 @@ const Events = () => {
     fetchEvents();
   }, []);
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading events...</p>
+          <p className="mt-4 text-gray-600">Loading event posters...</p>
         </div>
       </div>
     );
@@ -46,69 +36,47 @@ const Events = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Upcoming Events</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Event Posters</h1>
           <div className="w-24 h-1 bg-primary-600 mx-auto"></div>
           <p className="mt-4 text-lg text-gray-600">
-            Join us for exciting fitness events and challenges
+            Check out our latest event posters and announcements
           </p>
         </div>
 
-        {/* Events Grid */}
+        {/* Event Posters Grid */}
         {events.length === 0 ? (
           <div className="text-center py-12">
             <div className="text-gray-400 mb-4">
               <svg className="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No events scheduled</h3>
-            <p className="text-gray-500">Check back soon for upcoming events!</p>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No event posters available</h3>
+            <p className="text-gray-500">Check back soon for new event posters!</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {events.map((event) => (
               <div key={event._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                {/* Event Header */}
-                <div className="relative h-48 bg-gradient-to-r from-primary-600 to-secondary-600">
-                  {event.imageUrl ? (
+                {/* Event Poster */}
+                <div className="relative h-96">
+                  {event.posterImage ? (
                     <img 
-                      src={event.imageUrl} 
-                      alt={event.title}
+                      src={event.posterImage} 
+                      alt="Event poster"
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'flex';
+                      }}
                     />
                   ) : (
-                    <div className="flex items-center justify-center h-full">
-                      <div className="text-center text-white">
-                        <div className="text-2xl font-bold mb-2">{event.title}</div>
-                        <div className="text-sm bg-white bg-opacity-20 px-3 py-1 rounded-full">
-                          {formatDate(event.date)}
-                        </div>
-                      </div>
+                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                      <span className="text-gray-500">No Image</span>
                     </div>
                   )}
-                </div>
-
-                {/* Event Details */}
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    {event.title}
-                  </h3>
-                  {event.description && (
-                    <p className="text-gray-600 mb-4 line-clamp-3">
-                      {event.description}
-                    </p>
-                  )}
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="text-sm text-gray-500">
-                      <svg className="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      {formatDate(event.date)}
-                    </div>
-                    <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200">
-                      Learn More
-                    </button>
+                  <div className="w-full h-full bg-gray-200 flex items-center justify-center hidden">
+                    <span className="text-gray-500">No Image</span>
                   </div>
                 </div>
               </div>

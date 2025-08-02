@@ -160,10 +160,10 @@ const AdminEvents = () => {
           )}
 
           {/* Event Images Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {events.map((event) => (
               <div key={event._id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="relative h-48 overflow-hidden">
+                <div className="relative h-80 overflow-hidden">
                   {event.posterImage ? (
                     <>
                       <img
