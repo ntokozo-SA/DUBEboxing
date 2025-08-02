@@ -4,8 +4,8 @@
   "description": "Backend API for gym website",
   "main": "server.js",
   "scripts": {
-    "start": "node server-new.js",
-    "dev": "nodemon server-new.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

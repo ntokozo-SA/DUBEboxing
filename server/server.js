@@ -1,9 +1,15 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const mongoose = require('mongoose');
 require('dotenv').config({ path: './config.env' });
 
 const app = express();
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
 // Middleware
 app.use(cors());
@@ -12,41 +18,23 @@ app.use(express.static('uploads'));
 
 console.log('PORT:', process.env.PORT);
 
-// In-memory storage
-const events = [];
-const gallery = [];
-const team = [];
+// Import routes
+const authRoutes = require('./routes/auth');
+const eventsRoutes = require('./routes/events');
+const galleryRoutes = require('./routes/gallery');
+const teamRoutes = require('./routes/team');
+const contactRoutes = require('./routes/contact');
+const analyticsRoutes = require('./routes/analytics');
+const settingsRoutes = require('./routes/settings');
 
-// Events routes
-app.get('/api/events', (req, res) => {
-  res.json(events);
-});
-
-app.post('/api/events', (req, res) => {
-  const event = { id: Date.now(), ...req.body };
-  events.push(event);
-  res.json(event);
-});
-
-app.put('/api/events/:id', (req, res) => {
-  const index = events.findIndex(e => e.id == req.params.id);
-  if (index !== -1) {
-    events[index] = { ...events[index], ...req.body };
-    res.json(events[index]);
-  } else {
-    res.status(404).json({ message: 'Event not found' });
-  }
-});
-
-app.delete('/api/events/:id', (req, res) => {
-  const index = events.findIndex(e => e.id == req.params.id);
-  if (index !== -1) {
-    events.splice(index, 1);
-    res.json({ message: 'Event deleted' });
-  } else {
-    res.status(404).json({ message: 'Event not found' });
-  }
-});
+// Use routes
+app.use('/api/auth', authRoutes);
+app.use('/api/events', eventsRoutes);
+app.use('/api/gallery', galleryRoutes);
+app.use('/api/team', teamRoutes);
+app.use('/api/contact', contactRoutes);
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/settings', settingsRoutes);
 
 // Serve React frontend build folder
 app.use(express.static(path.join(__dirname, '../client/build')));
