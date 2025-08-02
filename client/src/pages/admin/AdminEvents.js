@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FaCalendarPlus, FaTrashAlt } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import AdminSidebar from '../../components/admin/AdminSidebar';
-import { eventAPI } from '../../services/api'; // adjust this if needed
+import { eventsAPI } from '../../services/api';
 
 const AdminEvents = () => {
   const [events, setEvents] = useState([]);
@@ -10,7 +10,7 @@ const AdminEvents = () => {
 
   const fetchEvents = async () => {
     try {
-      const res = await eventAPI.get('/');
+      const res = await eventsAPI.getAllAdmin();
       if (Array.isArray(res.data)) {
         setEvents(res.data);
       } else {
@@ -28,7 +28,7 @@ const AdminEvents = () => {
   const deleteEvent = async (id) => {
     if (!window.confirm('Are you sure you want to delete this event?')) return;
     try {
-      await eventAPI.delete(`/${id}`);
+              await eventsAPI.delete(id);
       setEvents((prev) => prev.filter((event) => event._id !== id));
     } catch (error) {
       console.error('Failed to delete event:', error);
