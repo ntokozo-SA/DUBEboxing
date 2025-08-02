@@ -3,12 +3,14 @@ const mongoose = require('mongoose');
 const eventSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true,
-    trim: true
+    required: false,
+    trim: true,
+    default: ''
   },
   description: {
     type: String,
-    trim: true
+    trim: true,
+    default: ''
   },
   posterImage: {
     type: String,
@@ -16,7 +18,8 @@ const eventSchema = new mongoose.Schema({
   },
   date: {
     type: Date,
-    required: true
+    required: false,
+    default: Date.now
   },
   isActive: {
     type: Boolean,

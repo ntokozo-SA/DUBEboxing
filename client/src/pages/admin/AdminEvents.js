@@ -9,9 +9,6 @@ const AdminEvents = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    date: '',
     isActive: true
   });
 
@@ -33,14 +30,14 @@ const AdminEvents = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formDataObj = new FormData();
-    formDataObj.append('title', formData.title);
-    formDataObj.append('description', formData.description);
-    formDataObj.append('date', formData.date);
     formDataObj.append('isActive', formData.isActive);
 
     const fileInput = document.getElementById('imageUrl');
     if (fileInput.files[0]) {
       formDataObj.append('imageUrl', fileInput.files[0]);
+    } else {
+      alert('Please select an image to upload.');
+      return;
     }
 
     try {
@@ -69,16 +66,13 @@ const AdminEvents = () => {
   };
 
   const resetForm = () => {
-    setFormData({ title: '', description: '', date: '', isActive: true });
+    setFormData({ isActive: true });
     setEditingEvent(null);
     setShowForm(false);
   };
 
   const editEvent = (event) => {
     setFormData({
-      title: event.title,
-      description: event.description || '',
-      date: event.date ? new Date(event.date).toISOString().split('T')[0] : '',
       isActive: event.isActive
     });
     setEditingEvent(event);
@@ -105,13 +99,13 @@ const AdminEvents = () => {
       <div className="ml-64 flex-1 bg-gray-50 min-h-screen">
         <div className="p-8">
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Manage Events</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Manage Event Images</h1>
             <button
               onClick={() => setShowForm(true)}
               className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg flex items-center"
             >
               <FaPlus className="mr-2" />
-              Add Event
+              Add Image
             </button>
           </div>
 
@@ -119,49 +113,12 @@ const AdminEvents = () => {
           {showForm && (
             <div className="bg-white rounded-lg shadow-md p-6 mb-8">
               <h2 className="text-xl font-semibold mb-4">
-                {editingEvent ? 'Edit Event' : 'Add New Event'}
+                {editingEvent ? 'Edit Event Image' : 'Add New Event Image'}
               </h2>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Title
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.title}
-                      onChange={(e) => setFormData({...formData, title: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Date
-                    </label>
-                    <input
-                      type="date"
-                      value={formData.date}
-                      onChange={(e) => setFormData({...formData, date: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                      required
-                    />
-                  </div>
-                </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Description
-                  </label>
-                  <textarea
-                    value={formData.description}
-                    onChange={(e) => setFormData({...formData, description: e.target.value})}
-                    rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Poster Image
+                    Event Image
                   </label>
                   <input
                     type="file"
@@ -188,7 +145,7 @@ const AdminEvents = () => {
                     type="submit"
                     className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg"
                   >
-                    {editingEvent ? 'Update Event' : 'Add Event'}
+                    {editingEvent ? 'Update Image' : 'Upload Image'}
                   </button>
                   <button
                     type="button"
@@ -202,7 +159,7 @@ const AdminEvents = () => {
             </div>
           )}
 
-          {/* Events Grid */}
+          {/* Event Images Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {events.map((event) => (
               <div key={event._id} className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -243,9 +200,6 @@ const AdminEvents = () => {
                   </div>
                 </div>
                 <div className="p-4">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{event.title}</h3>
-                  <p className="text-sm text-gray-600 mb-2">{new Date(event.date).toLocaleDateString()}</p>
-                  <p className="text-sm text-gray-700">{event.description}</p>
                   <div className="mt-2">
                     <span className={`inline-block px-2 py-1 text-xs rounded ${
                       event.isActive 

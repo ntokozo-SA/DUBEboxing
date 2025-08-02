@@ -45,11 +45,9 @@ router.post('/', auth, upload, async (req, res) => {
     console.log('Request body:', req.body);
     console.log('Request file:', req.file);
     
-    const { title, description, date } = req.body;
-    
     if (!req.file) {
       console.log('No file uploaded');
-      return res.status(400).json({ message: 'Poster image is required' });
+      return res.status(400).json({ message: 'Image is required' });
     }
 
     console.log('File uploaded successfully:', req.file.filename);
@@ -59,10 +57,7 @@ router.post('/', auth, upload, async (req, res) => {
     const base64Image = `data:${req.file.mimetype};base64,${imageBuffer.toString('base64')}`;
 
     const event = new Event({
-      title,
-      description,
-      posterImage: base64Image,
-      date: new Date(date)
+      posterImage: base64Image
     });
 
     console.log('Saving event:', event);
@@ -83,8 +78,8 @@ router.post('/', auth, upload, async (req, res) => {
 // Update event (admin)
 router.put('/:id', auth, upload, async (req, res) => {
   try {
-    const { title, description, date, isActive } = req.body;
-    const updateData = { title, description, date: new Date(date), isActive };
+    const { isActive } = req.body;
+    const updateData = { isActive };
 
     if (req.file) {
       // Convert file to base64 for storage
