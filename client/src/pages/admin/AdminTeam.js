@@ -223,14 +223,20 @@ const AdminTeam = () => {
               <div key={member._id} className="bg-white rounded-lg shadow-md overflow-hidden">
                 <div className="relative h-48 overflow-hidden">
                   {member.imageUrl ? (
-                    <img
-                      src={`http://localhost:5000${member.imageUrl}`}
-                      alt={member.name}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.target.src = 'https://via.placeholder.com/300x200?text=No+Image';
-                      }}
-                    />
+                    <>
+                      <img
+                        src={member.imageUrl}
+                        alt={member.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'flex';
+                        }}
+                      />
+                      <div className="w-full h-full bg-gray-200 flex items-center justify-center hidden">
+                        <span className="text-gray-500">No Image</span>
+                      </div>
+                    </>
                   ) : (
                     <div className="w-full h-full bg-gray-200 flex items-center justify-center">
                       <span className="text-gray-500">No Image</span>

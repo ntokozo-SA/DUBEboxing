@@ -225,13 +225,17 @@ const AdminGallery = () => {
               <div key={item._id} className="bg-white rounded-lg shadow-md overflow-hidden">
                 <div className="relative h-48 overflow-hidden">
                   <img
-                    src={`http://localhost:5000${item.imageUrl}`}
+                    src={item.imageUrl}
                     alt={item.title}
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                      e.target.src = 'https://via.placeholder.com/300x200?text=Image+Not+Found';
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'flex';
                     }}
                   />
+                  <div className="w-full h-full bg-gray-200 flex items-center justify-center hidden">
+                    <span className="text-gray-500">No Image</span>
+                  </div>
                   <div className="absolute top-2 left-2 bg-primary-600 text-white px-2 py-1 rounded-full text-xs font-semibold capitalize">
                     {item.category}
                   </div>

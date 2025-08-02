@@ -228,7 +228,8 @@ const AdminTeam = () => {
                       alt={member.name}
                       className="w-full h-full object-cover"
                       onError={(e) => {
-                        e.target.src = 'https://via.placeholder.com/300x200?text=No+Image';
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'flex';
                       }}
                     />
                   ) : (

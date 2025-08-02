@@ -114,9 +114,10 @@ const Gallery = () => {
                     src={`https://dubeboxing.onrender.com${item.imageUrl}`}
                     alt={item.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                    onError={(e) => {
-                      e.target.src = 'https://via.placeholder.com/300x200?text=Image+Not+Found';
-                    }}
+                                          onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'flex';
+                      }}
                   />
                   
                   {/* Overlay */}
