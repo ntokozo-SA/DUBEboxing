@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://dubeboxing.onrender.com/api';
+const API_BASE_URL = 'https://dubeboxing.co.za/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,

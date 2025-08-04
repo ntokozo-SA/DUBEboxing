@@ -54,6 +54,16 @@ router.get('/admin-test', auth, (req, res) => {
   });
 });
 
+// Test route to check token without gallery data
+router.get('/token-test', auth, (req, res) => {
+  res.json({ 
+    message: 'Token is valid',
+    user: req.user,
+    tokenExists: true,
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Debug route to check database structure
 router.get('/debug', async (req, res) => {
   try {
@@ -89,9 +99,15 @@ router.get('/', async (req, res) => {
       return res.status(500).json({ message: 'Gallery model not available' });
     }
     
-    const gallery = await Gallery.find({ isActive: true }).sort({ createdAt: -1 });
+    const gallery = await Gallery.find({ isActive: true });
     console.log(`Found ${gallery.length} gallery images`);
-    res.json(gallery);
+    
+    // Sort on client side to avoid MongoDB sorting issues
+    const sortedGallery = gallery.sort((a, b) => {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+    
+    res.json(sortedGallery);
   } catch (error) {
     console.error('Gallery fetch error:', error);
     console.error('Error stack:', error.stack);
@@ -112,14 +128,18 @@ router.get('/admin', auth, async (req, res) => {
       return res.status(500).json({ message: 'Gallery model not available' });
     }
     
-    // Try to fetch with error handling for each item
-    const gallery = await Gallery.find().sort({ createdAt: -1 }).lean();
+    // Try to fetch with error handling for each item - remove sorting to avoid MongoDB sorting issues
+    const gallery = await Gallery.find().lean();
     console.log(`Found ${gallery.length} gallery images (admin view)`);
     
     // Clean and validate each item
-    const cleanedGallery = gallery.map(item => {
+    console.log('Raw gallery items:', gallery.length);
+    console.log('First item sample:', gallery[0] ? Object.keys(gallery[0]) : 'No items');
+    
+    const cleanedGallery = gallery.map((item, index) => {
       try {
-        return {
+        console.log(`Processing item ${index}:`, item._id);
+        const cleanedItem = {
           _id: item._id,
           title: item.title || '',
           description: item.description || '',
@@ -129,15 +149,24 @@ router.get('/admin', auth, async (req, res) => {
           createdAt: item.createdAt || new Date(),
           updatedAt: item.updatedAt || new Date()
         };
+        console.log(`Item ${index} processed successfully`);
+        return cleanedItem;
       } catch (itemError) {
         console.error('Error processing gallery item:', item._id, itemError);
         return null;
       }
     }).filter(item => item !== null);
     
+    console.log('Cleaned gallery items:', cleanedGallery.length);
+    
     console.log(`Returning ${cleanedGallery.length} valid gallery items`);
     
-    res.json(cleanedGallery);
+    // Sort on client side to avoid MongoDB sorting issues with large documents
+    const sortedGallery = cleanedGallery.sort((a, b) => {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+    
+    res.json(sortedGallery);
   } catch (error) {
     console.error('Admin gallery fetch error:', error);
     console.error('Error stack:', error.stack);
