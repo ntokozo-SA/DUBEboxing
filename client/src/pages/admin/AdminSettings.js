@@ -159,7 +159,7 @@ const AdminSettings = () => {
                       contactInfo: {...settings.contactInfo, email: e.target.value}
                     })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                    placeholder="klethiba25@gmail.com"
+                    placeholder="info@dubeboxing.co.za"
                   />
                 </div>
 
