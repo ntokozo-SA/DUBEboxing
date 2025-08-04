@@ -7,9 +7,31 @@ require('dotenv').config({ path: './config.env' });
 const app = express();
 
 // Connect to MongoDB
+console.log('Attempting to connect to MongoDB...');
+console.log('MONGODB_URI exists:', !!process.env.MONGODB_URI);
+
 mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('MongoDB connection error:', err));
+  .then(() => {
+    console.log('Connected to MongoDB successfully');
+    console.log('Connection state:', mongoose.connection.readyState);
+  })
+  .catch(err => {
+    console.error('MongoDB connection error:', err);
+    console.error('Connection state:', mongoose.connection.readyState);
+  });
+
+// Monitor connection events
+mongoose.connection.on('error', (err) => {
+  console.error('MongoDB connection error:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('MongoDB disconnected');
+});
+
+mongoose.connection.on('connected', () => {
+  console.log('MongoDB connected');
+});
 
 // Middleware
 app.use(cors());

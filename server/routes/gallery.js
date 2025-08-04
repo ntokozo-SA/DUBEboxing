@@ -1,5 +1,6 @@
 const express = require('express');
 const fs = require('fs');
+const mongoose = require('mongoose');
 const Gallery = require('../models/Gallery');
 const auth = require('../middleware/auth');
 const upload = require('../middleware/upload');
@@ -7,18 +8,51 @@ const router = express.Router();
 
 // Test route to check if gallery routes are working
 router.get('/test', (req, res) => {
-  res.json({ message: 'Gallery routes are working', timestamp: new Date().toISOString() });
+  res.json({ 
+    message: 'Gallery routes are working', 
+    timestamp: new Date().toISOString(),
+    modelExists: !!Gallery,
+    mongooseConnection: mongoose.connection.readyState === 1,
+    connectionState: mongoose.connection.readyState
+  });
+});
+
+// Health check for gallery
+router.get('/health', async (req, res) => {
+  try {
+    const count = await Gallery.countDocuments();
+    res.json({ 
+      status: 'OK',
+      galleryCount: count,
+      connectionState: mongoose.connection.readyState,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      status: 'ERROR',
+      error: error.message,
+      connectionState: mongoose.connection.readyState
+    });
+  }
 });
 
 // Get all gallery images (public)
 router.get('/', async (req, res) => {
   try {
     console.log('Fetching public gallery images...');
+    
+    // Check if Gallery model exists
+    if (!Gallery) {
+      console.error('Gallery model not found');
+      return res.status(500).json({ message: 'Gallery model not available' });
+    }
+    
     const gallery = await Gallery.find({ isActive: true }).sort({ createdAt: -1 });
     console.log(`Found ${gallery.length} gallery images`);
     res.json(gallery);
   } catch (error) {
     console.error('Gallery fetch error:', error);
+    console.error('Error stack:', error.stack);
     console.error('Error details:', error.message);
     res.status(500).json({ message: 'Server error', details: error.message });
   }
@@ -28,11 +62,26 @@ router.get('/', async (req, res) => {
 router.get('/admin', auth, async (req, res) => {
   try {
     console.log('Fetching admin gallery images...');
+    console.log('User authenticated:', req.user);
+    
+    // Check if Gallery model exists
+    if (!Gallery) {
+      console.error('Gallery model not found');
+      return res.status(500).json({ message: 'Gallery model not available' });
+    }
+    
     const gallery = await Gallery.find().sort({ createdAt: -1 });
     console.log(`Found ${gallery.length} gallery images (admin view)`);
+    
+    // Log first few items to check structure
+    if (gallery.length > 0) {
+      console.log('First gallery item structure:', Object.keys(gallery[0]._doc));
+    }
+    
     res.json(gallery);
   } catch (error) {
     console.error('Admin gallery fetch error:', error);
+    console.error('Error stack:', error.stack);
     console.error('Error details:', error.message);
     res.status(500).json({ message: 'Server error', details: error.message });
   }
