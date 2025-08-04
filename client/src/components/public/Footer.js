@@ -73,7 +73,7 @@ const Footer = () => {
               <p>Mahalefele road</p>
               <p>johannesburg, south africa 1801</p>
               <p>Phone: +27 76 662 3761</p>
-              <p>Email: klethiba25@gmail.com</p>
+              <p>Email: info@dubeboxing.co.za</p>
             </div>
           </div>
         </div>

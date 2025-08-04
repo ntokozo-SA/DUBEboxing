@@ -5,7 +5,7 @@ import { FaWhatsapp, FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock } from 'react-
 const Contact = () => {
   const [contactInfo, setContactInfo] = useState({
     whatsapp: '+27 76 662 3761',
-    email: 'klethiba25@gmail.com',
+    email: 'info@dubeboxing.co.za',
     address: 'Mahalefele road, johannesburg, south africa 1801'
   });
   const [loading, setLoading] = useState(true);

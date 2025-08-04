@@ -12,15 +12,15 @@ const settingsSchema = new mongoose.Schema({
   contactInfo: {
     whatsapp: {
       type: String,
-      default: '+1234567890'
+      default: '+27 76 662 3761'
     },
     email: {
       type: String,
-      default: 'info@gym.com'
+      default: 'info@dubeboxing.co.za'
     },
     address: {
       type: String,
-      default: '123 Gym Street, City, Country'
+      default: 'Mahalefele road, johannesburg, south africa 1801'
     }
   },
   updatedAt: {
