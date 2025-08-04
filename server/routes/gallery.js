@@ -36,6 +36,48 @@ router.get('/health', async (req, res) => {
   }
 });
 
+// Test auth route
+router.get('/auth-test', auth, (req, res) => {
+  res.json({ 
+    message: 'Authentication working',
+    user: req.user,
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Simple admin test route
+router.get('/admin-test', auth, (req, res) => {
+  res.json({ 
+    message: 'Admin access working',
+    user: req.user,
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Debug route to check database structure
+router.get('/debug', async (req, res) => {
+  try {
+    const items = await Gallery.find().limit(3);
+    const debugInfo = items.map(item => ({
+      id: item._id,
+      hasTitle: !!item.title,
+      hasImageUrl: !!item.imageUrl,
+      hasDescription: !!item.description,
+      hasCategory: !!item.category,
+      hasIsActive: typeof item.isActive !== 'undefined',
+      keys: Object.keys(item._doc)
+    }));
+    
+    res.json({
+      totalCount: await Gallery.countDocuments(),
+      sampleItems: debugInfo,
+      schema: Gallery.schema.obj
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message, stack: error.stack });
+  }
+});
+
 // Get all gallery images (public)
 router.get('/', async (req, res) => {
   try {
@@ -70,15 +112,32 @@ router.get('/admin', auth, async (req, res) => {
       return res.status(500).json({ message: 'Gallery model not available' });
     }
     
-    const gallery = await Gallery.find().sort({ createdAt: -1 });
+    // Try to fetch with error handling for each item
+    const gallery = await Gallery.find().sort({ createdAt: -1 }).lean();
     console.log(`Found ${gallery.length} gallery images (admin view)`);
     
-    // Log first few items to check structure
-    if (gallery.length > 0) {
-      console.log('First gallery item structure:', Object.keys(gallery[0]._doc));
-    }
+    // Clean and validate each item
+    const cleanedGallery = gallery.map(item => {
+      try {
+        return {
+          _id: item._id,
+          title: item.title || '',
+          description: item.description || '',
+          imageUrl: item.imageUrl || '',
+          category: item.category || 'gym',
+          isActive: item.isActive !== undefined ? item.isActive : true,
+          createdAt: item.createdAt || new Date(),
+          updatedAt: item.updatedAt || new Date()
+        };
+      } catch (itemError) {
+        console.error('Error processing gallery item:', item._id, itemError);
+        return null;
+      }
+    }).filter(item => item !== null);
     
-    res.json(gallery);
+    console.log(`Returning ${cleanedGallery.length} valid gallery items`);
+    
+    res.json(cleanedGallery);
   } catch (error) {
     console.error('Admin gallery fetch error:', error);
     console.error('Error stack:', error.stack);

@@ -21,10 +21,21 @@ const AdminGallery = () => {
 
   const fetchGallery = async () => {
     try {
+      console.log('Fetching gallery...');
+      console.log('Token exists:', !!localStorage.getItem('adminToken'));
+      
       const response = await galleryAPI.getAllAdmin();
       setGallery(response.data);
     } catch (error) {
       console.error('Failed to fetch gallery:', error);
+      console.error('Error response:', error.response?.data);
+      
+      // If it's an auth error, redirect to login
+      if (error.response?.status === 401) {
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminUser');
+        window.location.href = '/admin/login';
+      }
     } finally {
       setLoading(false);
     }
