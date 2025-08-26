@@ -22,9 +22,12 @@ const AdminEvents = () => {
   const fetchEvents = async () => {
     try {
       const response = await eventsAPI.getAllAdmin();
-      setEvents(response.data);
+      const eventsData = Array.isArray(response.data) ? response.data : [];
+      console.log('Events data received:', response.data);
+      setEvents(eventsData);
     } catch (error) {
       console.error('Failed to fetch events:', error);
+      setEvents([]); // Set empty array on error
     } finally {
       setLoading(false);
     }
@@ -203,12 +206,12 @@ const AdminEvents = () => {
 
           {/* Events Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {events.map((event) => (
+            {Array.isArray(events) && events.map((event) => (
               <div key={event._id} className="bg-white rounded-lg shadow-md overflow-hidden">
                 <div className="relative h-48 overflow-hidden">
-                  {event.imageUrl ? (
+                  {event.posterImage ? (
                     <img
-                      src={`https://dubeboxing.onrender.com${event.imageUrl}`}
+                      src={`https://dubeboxing.onrender.com${event.posterImage}`}
                       alt={event.title}
                       className="w-full h-full object-cover"
                       onError={(e) => {

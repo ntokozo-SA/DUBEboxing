@@ -1,0 +1,104 @@
+import React from 'react';
+import ProjectCard from './ProjectCard';
+import { projectsData } from '../data/projectsData';
+
+const Home = () => {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header Section */}
+      <header className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            <div className="flex items-center space-x-4 mb-4 md:mb-0">
+              <div className="w-16 h-16 rounded-full overflow-hidden shadow-lg">
+                <img 
+                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=face" 
+                  alt="Developer" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Developer Portfolio</h1>
+                <p className="text-gray-600">Full-Stack Developer & UI/UX Enthusiast</p>
+              </div>
+            </div>
+            <div className="flex space-x-4">
+              <a href="#projects" className="text-blue-600 hover:text-blue-800 font-medium">
+                Projects
+              </a>
+              <a href="#contact" className="text-gray-600 hover:text-gray-800 font-medium">
+                Contact
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            Welcome to My Project Gallery
+          </h2>
+          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+            Explore my latest projects and see how I bring ideas to life with modern web technologies
+          </p>
+          <div className="flex justify-center space-x-4">
+            <button className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-300">
+              View Projects
+            </button>
+            <button className="border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors duration-300">
+              Get in Touch
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Projects Section */}
+      <section id="projects" className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h3 className="text-3xl font-bold text-gray-900 mb-4">
+              Featured Projects
+            </h3>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Click on any project card to view detailed information, blog content, and embedded demo videos
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {projectsData.map((project) => (
+              <ProjectCard key={project.id} project={project} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="bg-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h3 className="text-3xl font-bold text-gray-900 mb-4">
+            Let's Work Together
+          </h3>
+          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+            I'm always interested in new opportunities and exciting projects. 
+            Feel free to reach out if you'd like to collaborate.
+          </p>
+          <div className="flex justify-center space-x-6">
+            <a href="mailto:contact@example.com" className="text-blue-600 hover:text-blue-800 font-medium">
+              Email Me
+            </a>
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-800 font-medium">
+              GitHub
+            </a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-800 font-medium">
+              LinkedIn
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default Home; 

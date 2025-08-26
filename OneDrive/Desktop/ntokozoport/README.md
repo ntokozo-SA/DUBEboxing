@@ -1,0 +1,164 @@
+# Portfolio Gallery Website
+
+A modern, responsive portfolio website built with React and TailwindCSS that showcases projects with embedded YouTube videos and detailed blog content.
+
+## Features
+
+- **Project Gallery**: Display projects in an attractive grid layout with hover effects
+- **Clickable Cards**: Each project card is clickable and navigates to a detailed project page
+- **Embedded YouTube Videos**: Watch project demos directly within the site using YouTube embed iframes
+- **Detailed Blog Content**: Rich, formatted blog content for each project with proper typography
+- **Responsive Design**: Fully responsive layout that works on all device sizes
+- **Modern UI**: Clean, professional design with smooth animations and transitions
+- **React Router**: Client-side routing for seamless navigation between pages
+
+## Technology Stack
+
+- **Frontend**: React 18 with functional components and hooks
+- **Styling**: TailwindCSS for utility-first styling
+- **Routing**: React Router DOM for navigation
+- **Build Tool**: Create React App
+- **Icons**: SVG icons for UI elements
+
+## Project Structure
+
+```
+src/
+├── components/
+│   ├── Home.jsx              # Main homepage with project gallery
+│   ├── ProjectCard.jsx       # Individual project card component
+│   └── ProjectPage.jsx       # Detailed project page with video and blog
+├── data/
+│   └── projectsData.js       # Project data including blog content and video URLs
+├── App.jsx                   # Main app component with routing
+├── App.css                   # Custom styles and prose formatting
+└── index.css                 # TailwindCSS imports and base styles
+```
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (version 14 or higher)
+- npm or yarn package manager
+
+### Installation
+
+1. Clone the repository or navigate to the project directory
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+### Running the Application
+
+1. Start the development server:
+   ```bash
+   npm start
+   ```
+
+2. Open your browser and navigate to `http://localhost:3000`
+
+3. The application will automatically reload when you make changes to the code
+
+### Building for Production
+
+To create a production build:
+
+```bash
+npm run build
+```
+
+This creates an optimized build in the `build` folder that can be deployed to any static hosting service.
+
+## How It Works
+
+### Project Gallery (Home Page)
+- Displays a grid of project cards with images, titles, and descriptions
+- Each card has hover effects and a "View Project" call-to-action
+- Clicking a card navigates to the detailed project page
+
+### Project Detail Page
+- Shows comprehensive project information including:
+  - Large project image
+  - Project description and technology tags
+  - Embedded YouTube video player (using `/embed/` URLs)
+  - Detailed blog content with proper formatting
+  - Project metadata (category, duration, role, status)
+  - Quick action buttons
+
+### YouTube Video Integration
+- Videos are embedded using YouTube's iframe embed format
+- Videos play directly within the site without redirecting to YouTube
+- Responsive video player that maintains aspect ratio
+- Full YouTube player controls and features
+
+### Blog Content
+- Rich HTML content stored directly in the code (not external files)
+- Proper typography and formatting using TailwindCSS prose classes
+- Responsive text layout that reads well on all devices
+- Structured content with headings, lists, and paragraphs
+
+## Customization
+
+### Adding New Projects
+
+1. Edit `src/data/projectsData.js`
+2. Add a new project object with the following structure:
+   ```javascript
+   {
+     id: 5, // Unique ID
+     title: "Project Title",
+     description: "Brief project description",
+     imageUrl: "https://example.com/image.jpg",
+     youtubeEmbedUrl: "https://www.youtube.com/embed/VIDEO_ID",
+     blogContent: `
+       <h2>Project Title</h2>
+       <p>Your blog content here...</p>
+     `
+   }
+   ```
+
+### Styling Customization
+
+- Modify TailwindCSS classes in component files
+- Update `src/index.css` for global styles
+- Edit `src/App.css` for custom prose styling
+
+### YouTube Video URLs
+
+- Use YouTube embed URLs in the format: `https://www.youtube.com/embed/VIDEO_ID`
+- Replace `VIDEO_ID` with the actual YouTube video ID
+- The embed URL allows videos to play within the site
+
+## Browser Support
+
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+## Deployment
+
+The application can be deployed to any static hosting service:
+
+- **Netlify**: Drag and drop the `build` folder
+- **Vercel**: Connect your GitHub repository
+- **GitHub Pages**: Use the `gh-pages` package
+- **AWS S3**: Upload the `build` folder to an S3 bucket
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## License
+
+This project is open source and available under the MIT License.
+
+## Support
+
+For questions or issues, please open an issue in the repository or contact the developer. 

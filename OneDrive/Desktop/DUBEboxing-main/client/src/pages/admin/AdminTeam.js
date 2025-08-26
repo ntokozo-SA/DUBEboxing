@@ -23,9 +23,12 @@ const AdminTeam = () => {
   const fetchTeam = async () => {
     try {
       const response = await teamAPI.getAllAdmin();
-      setTeam(response.data);
+      const teamData = Array.isArray(response.data) ? response.data : [];
+      console.log('Team data received:', response.data);
+      setTeam(teamData);
     } catch (error) {
       console.error('Failed to fetch team:', error);
+      setTeam([]); // Set empty array on error
     } finally {
       setLoading(false);
     }
@@ -219,7 +222,7 @@ const AdminTeam = () => {
 
           {/* Team Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {team.map((member) => (
+            {Array.isArray(team) && team.map((member) => (
               <div key={member._id} className="bg-white rounded-lg shadow-md overflow-hidden">
                 <div className="relative h-48 overflow-hidden">
                   {member.imageUrl ? (
