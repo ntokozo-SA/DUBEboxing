@@ -1,1 +1,9 @@
-﻿{  "dependencies": {    "web-vitals": "^5.0.3"  }}
+{
+  "name": "dube-boxing",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "npm run build --prefix OneDrive/Desktop/DUBEboxing-main/client",
+    "start": "npm start --prefix OneDrive/Desktop/DUBEboxing-main/client"
+  }
+}
