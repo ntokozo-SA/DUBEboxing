@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaFacebook, FaInstagram, FaTwitter, FaWhatsapp } from 'react-icons/fa';
+import { publicAsset } from '../../utils/imageUrl';
 
 const Footer = () => {
   return (
@@ -10,7 +11,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
             <img 
-              src="logo.jpg" 
+              src={publicAsset('/logo.jpg')} 
               alt="Logo" 
               className="h-16 w-auto mb-4 rounded shadow"
             />

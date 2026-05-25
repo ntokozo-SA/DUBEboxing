@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import AdminSidebar from '../../components/admin/AdminSidebar';
 import { teamAPI } from '../../services/api';
+import { resolveImageUrl } from '../../utils/imageUrl';
 import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
 
 const AdminTeam = () => {
@@ -227,7 +228,7 @@ const AdminTeam = () => {
                 <div className="relative h-48 overflow-hidden">
                   {member.imageUrl ? (
                     <img
-                      src={`https://dubeboxing.onrender.com${member.imageUrl}`}
+                      src={resolveImageUrl(member.imageUrl)}
                       alt={member.name}
                       className="w-full h-full object-cover"
                       onError={(e) => {

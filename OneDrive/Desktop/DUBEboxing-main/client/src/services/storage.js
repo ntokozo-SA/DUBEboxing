@@ -1,9 +1,12 @@
+import { SEED_GALLERY, SEED_VERSION } from '../data/seedContent';
+
 const STORAGE_KEYS = {
   events: 'dube_events',
   gallery: 'dube_gallery',
   team: 'dube_team',
   settings: 'dube_settings',
   analytics: 'dube_analytics',
+  seedVersion: 'dube_seed_version',
 };
 
 export const DEFAULT_SETTINGS = {
@@ -52,6 +55,17 @@ export const saveSettings = (settings) => {
   }
   localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(merged));
   return merged;
+};
+
+export const ensureSeedData = () => {
+  const applied = localStorage.getItem(STORAGE_KEYS.seedVersion);
+  if (applied === SEED_VERSION) return;
+
+  if (readCollection(STORAGE_KEYS.gallery).length === 0) {
+    writeCollection(STORAGE_KEYS.gallery, SEED_GALLERY);
+  }
+
+  localStorage.setItem(STORAGE_KEYS.seedVersion, SEED_VERSION);
 };
 
 export const getCollection = (key) => readCollection(STORAGE_KEYS[key]);

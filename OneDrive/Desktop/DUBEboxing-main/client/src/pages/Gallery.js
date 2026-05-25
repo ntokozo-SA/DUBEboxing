@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { galleryAPI, settingsAPI } from '../services/api';
+import { resolveImageUrl } from '../utils/imageUrl';
 
 const Gallery = () => {
   const [gallery, setGallery] = useState([]);
@@ -111,7 +112,7 @@ const Gallery = () => {
                 {/* Image */}
                 <div className="relative h-64 overflow-hidden">
                   <img
-                    src={`https://dubeboxing.onrender.com${item.imageUrl}`}
+                    src={resolveImageUrl(item.imageUrl)}
                     alt={item.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                                           onError={(e) => {

@@ -3,10 +3,8 @@
   "buildCommand": "cd client && DISABLE_ESLINT_PLUGIN=true npm run build",
   "framework": "create-react-app",
   "outputDirectory": "client/build",
-  "rewrites": [
-    {
-      "source": "/((?!static/).*)",
-      "destination": "/index.html"
-    }
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }

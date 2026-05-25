@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import AdminSidebar from '../../components/admin/AdminSidebar';
 import { eventsAPI } from '../../services/api';
+import { resolveImageUrl } from '../../utils/imageUrl';
 import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
 
 const AdminEvents = () => {
@@ -211,7 +212,7 @@ const AdminEvents = () => {
                 <div className="relative h-48 overflow-hidden">
                   {event.posterImage ? (
                     <img
-                      src={`https://dubeboxing.onrender.com${event.posterImage}`}
+                      src={resolveImageUrl(event.posterImage)}
                       alt={event.title}
                       className="w-full h-full object-cover"
                       onError={(e) => {

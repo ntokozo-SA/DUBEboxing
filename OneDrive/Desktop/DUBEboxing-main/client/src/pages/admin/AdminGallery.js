@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import AdminSidebar from '../../components/admin/AdminSidebar';
 import { galleryAPI } from '../../services/api';
+import { resolveImageUrl } from '../../utils/imageUrl';
 import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
 
 const AdminGallery = () => {
@@ -219,7 +220,7 @@ const AdminGallery = () => {
                 <div className="relative h-48 overflow-hidden">
                   {item.imageUrl ? (
                   <img
-                    src={`https://dubeboxing.onrender.com${item.imageUrl}`}
+                    src={resolveImageUrl(item.imageUrl)}
                     alt={item.title}
                     className="w-full h-full object-cover"
                     onError={(e) => {

@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { teamAPI } from '../services/api';
+import { resolveImageUrl } from '../utils/imageUrl';
 
 const Team = () => {
   const [team, setTeam] = useState([]);
@@ -65,7 +66,7 @@ const Team = () => {
                 <div className="relative h-80 overflow-hidden">
                   {member.imageUrl ? (
                   <img
-                      src={`https://dubeboxing.onrender.com${member.imageUrl}`}
+                      src={resolveImageUrl(member.imageUrl)}
                     alt={member.name}
                     className="w-full h-full object-cover"
                                           onError={(e) => {
