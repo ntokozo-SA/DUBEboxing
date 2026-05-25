@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+﻿import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { analyticsAPI } from './services/api';
 import Navbar from './components/public/Navbar';
@@ -9,6 +9,7 @@ import Events from './pages/Events';
 import Gallery from './pages/Gallery';
 import Team from './pages/Team';
 import Contact from './pages/Contact';
+import Shop from './pages/Shop';
 import AdminDisabled from './pages/admin/AdminDisabled';
 import './App.css';
 
@@ -63,6 +64,14 @@ function App() {
             <>
               <Navbar />
               <Team />
+              <Footer />
+              <WhatsAppFloat />
+            </>
+          } />
+          <Route path="/shop" element={
+            <>
+              <Navbar />
+              <Shop />
               <Footer />
               <WhatsAppFloat />
             </>
