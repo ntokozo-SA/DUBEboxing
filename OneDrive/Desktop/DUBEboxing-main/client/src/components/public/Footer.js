@@ -10,14 +10,14 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
-            <img 
-              src={publicAsset('/logo.jpg')} 
-              alt="Logo" 
-              className="h-16 w-auto mb-4 rounded shadow"
+            <img
+              src={publicAsset('/logo.jpg')}
+              alt="Dube Boxing Club"
+              className="h-16 w-auto mb-4 rounded shadow bg-white p-1"
             />
             <p className="text-gray-300 mb-4">
-              Transform your body and mind with our state-of-the-art facilities and expert trainers. 
-              Join our community and achieve your fitness goals today.
+              Dube Boxing Club — fighting for community wellbeing. Train with expert coaches,
+              build skill and fitness, and be part of our Johannesburg boxing family.
             </p>
             <div className="flex space-x-4">
               <span className="text-gray-400" aria-hidden="true"><FaFacebook size={24} /></span>
