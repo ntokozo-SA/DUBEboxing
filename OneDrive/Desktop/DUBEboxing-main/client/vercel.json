@@ -1,6 +1,10 @@
 {
   "routes": [
     { "handle": "filesystem" },
+    {
+      "src": "/(.*\\.(?:mp4|webm|jpg|jpeg|png|gif|ico|svg|css|js|woff2?|json))",
+      "headers": { "cache-control": "public, max-age=31536000, immutable" }
+    },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
