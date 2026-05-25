@@ -1,8 +1,8 @@
 {
-  "installCommand": "npm install --prefix OneDrive/Desktop/DUBEboxing-main/client",
-  "buildCommand": "cd OneDrive/Desktop/DUBEboxing-main/client && DISABLE_ESLINT_PLUGIN=true npm run build",
+  "installCommand": "npm install --prefix client",
+  "buildCommand": "cd client && DISABLE_ESLINT_PLUGIN=true npm run build",
   "framework": "create-react-app",
-  "outputDirectory": "OneDrive/Desktop/DUBEboxing-main/client/build",
+  "outputDirectory": "client/build",
   "rewrites": [
     { "source": "/((?!static/).*)", "destination": "/index.html" }
   ]
