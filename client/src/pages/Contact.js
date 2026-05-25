@@ -1,36 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { contactAPI } from '../services/api';
+import React from 'react';
+import { contactInfo } from '../data/contactInfo';
+import { openWhatsApp } from '../utils/whatsapp';
+import { getMapEmbedUrl, getMapDirectionsUrl } from '../utils/maps';
 import { FaWhatsapp, FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock } from 'react-icons/fa';
 
 const Contact = () => {
-  const [contactInfo, setContactInfo] = useState({
-    whatsapp: '+27 76 662 3761',
-    email: 'info@dubeboxing.co.za',
-    address: 'Mahalefele road, johannesburg, south africa 1801'
-  });
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchContactInfo = async () => {
-      try {
-        const response = await contactAPI.get();
-        setContactInfo(response.data);
-      } catch (error) {
-        console.error('Failed to fetch contact info:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchContactInfo();
-  }, []);
-
-  const handleWhatsAppClick = () => {
-    const message = encodeURIComponent('Hello! I would like to know more about your boxing club services.');
-    const whatsappUrl = `https://wa.me/${contactInfo.whatsapp.replace(/\D/g, '')}?text=${message}`;
-    window.open(whatsappUrl, '_blank');
-  };
-
   const handlePhoneClick = () => {
     window.open(`tel:${contactInfo.whatsapp}`, '_self');
   };
@@ -38,17 +12,6 @@ const Contact = () => {
   const handleEmailClick = () => {
     window.open(`mailto:${contactInfo.email}`, '_self');
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading contact information...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -77,7 +40,8 @@ const Contact = () => {
                   <h3 className="text-lg font-semibold text-gray-900">WhatsApp</h3>
                   <p className="text-gray-600">{contactInfo.whatsapp}</p>
                   <button
-                    onClick={handleWhatsAppClick}
+                    type="button"
+                    onClick={() => openWhatsApp()}
                     className="text-green-600 hover:text-green-700 font-medium mt-1"
                   >
                     Chat with us →
@@ -127,6 +91,14 @@ const Contact = () => {
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">Address</h3>
                   <p className="text-gray-600">{contactInfo.address}</p>
+                  <a
+                    href={getMapDirectionsUrl()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary-600 hover:text-primary-700 font-medium mt-1 inline-block"
+                  >
+                    Get directions →
+                  </a>
                 </div>
               </div>
 
@@ -245,13 +217,27 @@ const Contact = () => {
 
         {/* Map Section */}
         <div className="mt-12 bg-white rounded-lg shadow-md p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Find Us</h2>
-          <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
-            <div className="text-center text-gray-500">
-              <FaMapMarkerAlt className="text-4xl mx-auto mb-4" />
-              <p>Interactive map will be displayed here</p>
-              <p className="text-sm mt-2">{contactInfo.address}</p>
-            </div>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">Find Us</h2>
+            <a
+              href={getMapDirectionsUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded-lg font-semibold transition-colors duration-200"
+            >
+              Open in Google Maps
+            </a>
+          </div>
+          <p className="text-gray-600 mb-4">{contactInfo.address}</p>
+          <div className="w-full h-80 sm:h-96 rounded-lg overflow-hidden border border-gray-200">
+            <iframe
+              title="Dube Boxing Club location on Google Maps"
+              src={getMapEmbedUrl()}
+              className="w-full h-full border-0"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
           </div>
         </div>
       </div>

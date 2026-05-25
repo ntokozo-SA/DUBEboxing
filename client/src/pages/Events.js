@@ -1,40 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { eventsAPI } from '../services/api';
+import React from 'react';
+import { eventPosters } from '../data/eventsPosters';
 
 const Events = () => {
-  const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await eventsAPI.getAll();
-        setEvents(response.data);
-      } catch (error) {
-        console.error('Failed to fetch events:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEvents();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading event posters...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Event Posters</h1>
           <div className="w-24 h-1 bg-primary-600 mx-auto"></div>
@@ -43,8 +13,7 @@ const Events = () => {
           </p>
         </div>
 
-        {/* Event Posters Grid */}
-        {events.length === 0 ? (
+        {eventPosters.length === 0 ? (
           <div className="text-center py-12">
             <div className="text-gray-400 mb-4">
               <svg className="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -56,28 +25,17 @@ const Events = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {events.map((event) => (
-              <div key={event._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                {/* Event Poster */}
+            {eventPosters.map((src, index) => (
+              <div
+                key={src}
+                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+              >
                 <div className="relative h-96">
-                  {event.posterImage ? (
-                    <img 
-                      src={event.posterImage} 
-                      alt="Event poster"
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                        e.target.nextSibling.style.display = 'flex';
-                      }}
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                      <span className="text-gray-500">No Image</span>
-                    </div>
-                  )}
-                  <div className="w-full h-full bg-gray-200 flex items-center justify-center hidden">
-                    <span className="text-gray-500">No Image</span>
-                  </div>
+                  <img
+                    src={src}
+                    alt={`Event poster ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               </div>
             ))}
@@ -88,4 +46,4 @@ const Events = () => {
   );
 };
 
-export default Events; 
+export default Events;

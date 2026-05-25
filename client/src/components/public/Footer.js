@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaFacebook, FaInstagram, FaTwitter, FaWhatsapp } from 'react-icons/fa';
+import { contactInfo } from '../../data/contactInfo';
+import { getWhatsAppUrl } from '../../utils/whatsapp';
 
 const Footer = () => {
   return (
@@ -28,7 +30,13 @@ const Footer = () => {
               <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">
                 <FaTwitter size={24} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">
+              <a
+                href={getWhatsAppUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-green-400 transition-colors"
+                aria-label="Chat on WhatsApp"
+              >
                 <FaWhatsapp size={24} />
               </a>
             </div>
@@ -54,6 +62,11 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/shop" className="text-gray-300 hover:text-white transition-colors">
+                  Shop
+                </Link>
+              </li>
+              <li>
                 <Link to="/team" className="text-gray-300 hover:text-white transition-colors">
                   Team
                 </Link>
@@ -72,8 +85,8 @@ const Footer = () => {
             <div className="space-y-2 text-gray-300">
               <p>Mahalefele road</p>
               <p>johannesburg, south africa 1801</p>
-              <p>Phone: +27 76 662 3761</p>
-              <p>Email: info@dubeboxing.co.za</p>
+              <p>Phone: {contactInfo.whatsapp}</p>
+              <p>Email: {contactInfo.email}</p>
             </div>
           </div>
         </div>

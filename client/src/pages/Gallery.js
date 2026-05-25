@@ -1,154 +1,271 @@
-import React, { useState, useEffect } from 'react';
-import { galleryAPI, settingsAPI } from '../services/api';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { FaTimes, FaChevronLeft, FaChevronRight, FaExpand } from 'react-icons/fa';
+import { galleryImages } from '../data/galleryImages';
+
+const galleryLabels = [
+  'Boxing ring and training area',
+  'Boxing ring corner',
+  'Free weights and gym equipment',
+  'Cardio equipment area',
+  'Spin bikes and rowing machines',
+];
+
+const SWIPE_THRESHOLD = 50;
 
 const Gallery = () => {
-  const [gallery, setGallery] = useState([]);
-  const [settings, setSettings] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [lightboxIndex, setLightboxIndex] = useState(null);
+  const touchStartX = useRef(null);
+  const touchStartY = useRef(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [galleryResponse, settingsResponse] = await Promise.all([
-          galleryAPI.getAll(),
-          settingsAPI.get()
-        ]);
-        setGallery(galleryResponse.data);
-        setSettings(settingsResponse.data);
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const closeLightbox = useCallback(() => setLightboxIndex(null), []);
 
-    fetchData();
+  const showPrev = useCallback(() => {
+    setLightboxIndex((i) =>
+      i === null ? null : (i - 1 + galleryImages.length) % galleryImages.length
+    );
   }, []);
 
-  const categories = [
-    { id: 'all', name: 'All' },
-    { id: 'gym', name: 'Gym' },
-    { id: 'equipment', name: 'Equipment' },
-    { id: 'classes', name: 'Classes' },
-    { id: 'facilities', name: 'Facilities' }
-  ];
-
-  const filteredGallery = selectedCategory === 'all' 
-    ? gallery 
-    : gallery.filter(item => item.category === selectedCategory);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading gallery...</p>
-        </div>
-      </div>
+  const showNext = useCallback(() => {
+    setLightboxIndex((i) =>
+      i === null ? null : (i + 1) % galleryImages.length
     );
-  }
+  }, []);
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current === null || touchStartY.current === null) return;
+
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    const deltaY = e.changedTouches[0].clientY - touchStartY.current;
+
+    touchStartX.current = null;
+    touchStartY.current = null;
+
+    // Ignore mostly vertical swipes (page scroll)
+    if (Math.abs(deltaY) > Math.abs(deltaX)) return;
+
+    if (deltaX < -SWIPE_THRESHOLD) showNext();
+    else if (deltaX > SWIPE_THRESHOLD) showPrev();
+  };
+
+  useEffect(() => {
+    if (lightboxIndex === null) return undefined;
+
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') showPrev();
+      if (e.key === 'ArrowRight') showNext();
+    };
+
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [lightboxIndex, closeLightbox, showPrev, showNext]);
+
+  const openLightbox = (index) => setLightboxIndex(index);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Our Gallery</h1>
-          <div className="w-24 h-1 bg-primary-600 mx-auto"></div>
-          <p className="mt-4 text-lg text-gray-600">
-            Take a look at our amazing facilities and equipment
+    <div className="min-h-screen bg-gray-950 pb-6 sm:pb-10">
+      {/* Header — compact on mobile */}
+      <div className="bg-gray-900 border-b border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 sm:py-12 lg:px-8 text-center">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight">
+            Gallery
+          </h1>
+          <p className="mt-2 text-gray-400 text-sm sm:text-lg max-w-md mx-auto px-2">
+            Our ring, equipment, and training facilities
           </p>
         </div>
+      </div>
 
-        {/* Gym History Section */}
-        {settings.gymHistory && (
-          <div className="bg-white rounded-lg shadow-md p-8 mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Our Story</h2>
-            <div className="w-16 h-1 bg-primary-600 mb-6"></div>
-            <p className="text-gray-700 leading-relaxed text-lg">
-              {settings.gymHistory}
-            </p>
-          </div>
-        )}
-
-        {/* Category Filter */}
-        <div className="flex flex-wrap justify-center gap-4 mb-8">
-          {categories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => setSelectedCategory(category.id)}
-              className={`px-6 py-2 rounded-full font-medium transition-colors duration-200 ${
-                selectedCategory === category.id
-                  ? 'bg-primary-600 text-white'
-                  : 'bg-white text-gray-700 hover:bg-primary-50 hover:text-primary-600'
-              }`}
-            >
-              {category.name}
-            </button>
-          ))}
-        </div>
-
-        {/* Gallery Grid */}
-        {filteredGallery.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-gray-400 mb-4">
-              <svg className="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No images found</h3>
-            <p className="text-gray-500">No images available for this category.</p>
+      {/* Photos — mobile-first layout */}
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 sm:pt-8">
+        {galleryImages.length === 0 ? (
+          <div className="text-center py-16 sm:py-20">
+            <p className="text-gray-400 text-base sm:text-lg">No photos yet.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredGallery.map((item) => (
-              <div key={item._id} className="group relative bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
-                {/* Image */}
-                <div className="relative h-64 overflow-hidden">
-                  <img
-                    src={item.imageUrl}
-                    alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                    onError={(e) => {
-                      e.target.src = '/placeholder-gallery.jpg';
-                    }}
-                  />
-                  
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center">
-                    <div className="text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
-                      {item.description && (
-                        <p className="text-sm">{item.description}</p>
-                      )}
-                    </div>
-                  </div>
+          <div className="space-y-3 sm:space-y-4">
+            {/* Featured hero — taller on phone, easier to tap */}
+            <button
+              type="button"
+              onClick={() => openLightbox(0)}
+              className="gallery-tap-target group relative w-full aspect-[4/3] sm:aspect-[16/9] lg:aspect-[21/9] overflow-hidden rounded-2xl sm:rounded-xl bg-gray-800 active:opacity-90"
+              aria-label={`View ${galleryLabels[0]}`}
+            >
+              <img
+                src={galleryImages[0]}
+                alt={galleryLabels[0]}
+                className="w-full h-full object-cover"
+                decoding="async"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = '/logo.jpg';
+                }}
+              />
+              <span className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none" />
+              <span className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-auto text-left">
+                <span className="block text-white text-sm sm:text-base font-semibold leading-snug">
+                  {galleryLabels[0]}
+                </span>
+                <span className="mt-1 inline-flex items-center gap-1.5 text-white/80 text-xs sm:text-sm">
+                  <FaExpand className="shrink-0" aria-hidden />
+                  Tap to view full size
+                </span>
+              </span>
+            </button>
 
-                  {/* Category Badge */}
-                  <div className="absolute top-4 left-4 bg-primary-600 text-white px-2 py-1 rounded-full text-xs font-semibold capitalize">
-                    {item.category}
-                  </div>
-                </div>
-
-                {/* Image Info */}
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                    {item.title}
-                  </h3>
-                  {item.description && (
-                    <p className="text-gray-600 text-sm line-clamp-2">
-                      {item.description}
-                    </p>
-                  )}
-                </div>
+            {/* Thumbnails — single column on small phones, 2 cols from 400px+ */}
+            {galleryImages.length > 1 && (
+              <div className="grid grid-cols-1 min-[420px]:grid-cols-2 lg:grid-cols-4 gap-3">
+                {galleryImages.slice(1).map((src, i) => {
+                  const index = i + 1;
+                  return (
+                    <button
+                      key={src}
+                      type="button"
+                      onClick={() => openLightbox(index)}
+                      className="gallery-tap-target group relative w-full aspect-[16/10] sm:aspect-[4/3] overflow-hidden rounded-xl sm:rounded-lg bg-gray-800 active:opacity-90"
+                      aria-label={`View ${galleryLabels[index]}`}
+                    >
+                      <img
+                        src={src}
+                        alt={galleryLabels[index]}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = '/logo.jpg';
+                        }}
+                      />
+                      <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3 pt-8 pointer-events-none sm:hidden">
+                        <span className="text-white text-xs font-medium line-clamp-2">
+                          {galleryLabels[index]}
+                        </span>
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
-            ))}
+            )}
           </div>
         )}
       </div>
+
+      {/* Lightbox — full screen on mobile, swipe + bottom controls */}
+      {lightboxIndex !== null && galleryImages[lightboxIndex] && (
+        <div
+          className="fixed inset-0 z-50 flex flex-col bg-black touch-none"
+          style={{ height: '100dvh' }}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Photo viewer"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* Top bar — safe area for notched phones */}
+          <div
+            className="flex items-center justify-between shrink-0 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] pb-2"
+          >
+            <p className="text-white/90 text-sm font-medium truncate pr-2">
+              {galleryLabels[lightboxIndex]}
+            </p>
+            <button
+              type="button"
+              onClick={closeLightbox}
+              className="gallery-tap-target flex items-center justify-center min-w-[44px] min-h-[44px] text-white bg-white/10 rounded-full active:bg-white/20"
+              aria-label="Close"
+            >
+              <FaTimes size={22} />
+            </button>
+          </div>
+
+          {/* Image + side nav (tablet/desktop) */}
+          <div className="relative flex-1 flex items-center justify-center px-2 min-h-0">
+            {galleryImages.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={showPrev}
+                  className="gallery-tap-target hidden sm:flex absolute left-2 z-10 items-center justify-center min-w-[44px] min-h-[44px] text-white bg-white/10 rounded-full active:bg-white/20"
+                  aria-label="Previous photo"
+                >
+                  <FaChevronLeft size={22} />
+                </button>
+                <button
+                  type="button"
+                  onClick={showNext}
+                  className="gallery-tap-target hidden sm:flex absolute right-2 z-10 items-center justify-center min-w-[44px] min-h-[44px] text-white bg-white/10 rounded-full active:bg-white/20"
+                  aria-label="Next photo"
+                >
+                  <FaChevronRight size={22} />
+                </button>
+              </>
+            )}
+
+            <div
+              className="flex items-center justify-center w-full h-full"
+              onClick={closeLightbox}
+            >
+              <img
+                src={galleryImages[lightboxIndex]}
+                alt={galleryLabels[lightboxIndex]}
+                className="max-h-full max-w-full w-auto h-auto object-contain select-none"
+                style={{ maxHeight: 'calc(100dvh - 9rem)' }}
+                onClick={(e) => e.stopPropagation()}
+                draggable={false}
+              />
+            </div>
+          </div>
+
+          {/* Bottom controls — thumb zone on mobile */}
+          <div className="shrink-0 flex items-center justify-between gap-2 px-3 pb-[max(1rem,env(safe-area-inset-bottom))] pt-2 bg-gradient-to-t from-black/80 to-transparent">
+            {galleryImages.length > 1 ? (
+              <>
+                <button
+                  type="button"
+                  onClick={showPrev}
+                  className="gallery-tap-target flex sm:hidden items-center justify-center min-w-[48px] min-h-[48px] text-white bg-white/15 rounded-full active:bg-white/25"
+                  aria-label="Previous photo"
+                >
+                  <FaChevronLeft size={20} />
+                </button>
+
+                <p className="flex-1 text-center text-white/70 text-sm px-1">
+                  <span className="font-medium text-white/90">
+                    {lightboxIndex + 1} / {galleryImages.length}
+                  </span>
+                  <span className="sm:hidden block text-xs text-white/50 mt-0.5">
+                    Swipe left or right
+                  </span>
+                </p>
+
+                <button
+                  type="button"
+                  onClick={showNext}
+                  className="gallery-tap-target flex sm:hidden items-center justify-center min-w-[48px] min-h-[48px] text-white bg-white/15 rounded-full active:bg-white/25"
+                  aria-label="Next photo"
+                >
+                  <FaChevronRight size={20} />
+                </button>
+              </>
+            ) : (
+              <p className="w-full text-center text-white/70 text-sm py-2">1 / 1</p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default Gallery; 
+export default Gallery;
