@@ -1,81 +1,39 @@
-﻿import React, { useCallback, useEffect, useRef, useState } from 'react';
+﻿import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { settingsAPI } from '../services/api';
-import { publicAsset, resolveImageUrl } from '../utils/imageUrl';
+import { publicAsset } from '../utils/imageUrl';
 
-const DEFAULT_VIDEO = publicAsset('/home-video.mp4');
-const FALLBACK_POSTER = publicAsset('/club-photo.jpg');
-
-const isUsableVideoUrl = (url) => {
-  if (!url) return false;
-  if (url.startsWith('/') || url.startsWith('./')) return true;
-  if (url.startsWith('http://') || url.startsWith('https://')) {
-    return /\.(mp4|webm)(\?|#|$)/i.test(url) || url.includes('/home-video');
-  }
-  return false;
-};
+/** Hero background — file: client/public/home-video.mp4 */
+const HOME_VIDEO = publicAsset('/home-video.mp4');
 
 const Home = () => {
   const videoRef = useRef(null);
-  const [videoSrc, setVideoSrc] = useState(DEFAULT_VIDEO);
-  const [usePoster, setUsePoster] = useState(false);
-  const triedDefaultRef = useRef(false);
-
-  useEffect(() => {
-    settingsAPI.get().then((res) => {
-      const url = res.data?.homeVideoUrl?.trim();
-      if (isUsableVideoUrl(url)) {
-        setVideoSrc(resolveImageUrl(url));
-        triedDefaultRef.current = false;
-      }
-    });
-  }, []);
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || usePoster) return;
+    if (!video) return;
 
-    const play = () => {
-      video.play().catch(() => {});
-    };
-
+    const play = () => video.play().catch(() => {});
     video.addEventListener('canplay', play);
     play();
 
     return () => video.removeEventListener('canplay', play);
-  }, [videoSrc, usePoster]);
-
-  const handleVideoError = useCallback(() => {
-    if (!triedDefaultRef.current && videoSrc !== DEFAULT_VIDEO) {
-      triedDefaultRef.current = true;
-      setVideoSrc(DEFAULT_VIDEO);
-      return;
-    }
-    setUsePoster(true);
-  }, [videoSrc]);
+  }, []);
 
   return (
     <div className="min-h-screen bg-white">
-      <section className="relative h-screen overflow-hidden bg-gray-900">
-        {!usePoster ? (
-          <video
-            ref={videoRef}
-            src={videoSrc}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-            onError={handleVideoError}
-            className="absolute inset-0 w-full h-full object-cover z-0"
-          />
-        ) : (
-          <img
-            src={FALLBACK_POSTER}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover z-0"
-          />
-        )}
+      <section className="relative h-screen overflow-hidden bg-black">
+        <video
+          ref={videoRef}
+          src={HOME_VIDEO}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          className="absolute inset-0 w-full h-full object-cover z-0"
+        >
+          <source src={HOME_VIDEO} type="video/mp4" />
+        </video>
         <div
           className="absolute inset-0 z-[1] bg-black/35"
           aria-hidden="true"
