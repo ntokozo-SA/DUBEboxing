@@ -1,4 +1,4 @@
-# Dependencies
+﻿# Dependencies
 node_modules/
 */node_modules/
 
@@ -24,70 +24,41 @@ pids
 *.seed
 *.pid.lock
 
-# Coverage directory used by tools like istanbul
+# Coverage
 coverage/
-
-# nyc test coverage
 .nyc_output
 
-# Dependency directories
-jspm_packages/
-
-# Optional npm cache directory
+# Optional npm cache
 .npm
 
-# Optional REPL history
-.node_repl_history
-
-# Output of 'npm pack'
-*.tgz
-
-# Yarn Integrity file
-.yarn-integrity
-
-# dotenv environment variables file
-.env
-
-# parcel-bundler cache (https://parceljs.org/)
+# parcel-bundler cache
 .cache
 .parcel-cache
 
-# next.js build output
+# next.js / nuxt
 .next
-
-# nuxt.js build output
 .nuxt
 
-# vuepress build output
-.vuepress/dist
-
-# Serverless directories
+# Serverless
 .serverless
 
-# FuseBox cache
+# FuseBox
 .fusebox/
 
-# DynamoDB Local files
+# DynamoDB Local
 .dynamodb/
 
-# TernJS port file
-.tern-port
-
-# Uploaded files (keep directory but ignore contents)
-server/uploads/*
-!server/uploads/.gitkeep
-
-# IDE files
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# OS generated files
+# OS
 .DS_Store
 .DS_Store?
 ._*
 .Spotlight-V100
 .Trashes
 ehthumbs.db
-Thumbs.db 
+Thumbs.db

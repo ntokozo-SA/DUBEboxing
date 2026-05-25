@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+﻿import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { analyticsAPI } from './services/api';
 import Navbar from './components/public/Navbar';
 import Footer from './components/public/Footer';
 import WhatsAppFloat from './components/public/WhatsAppFloat';
@@ -8,31 +9,32 @@ import Events from './pages/Events';
 import Gallery from './pages/Gallery';
 import Team from './pages/Team';
 import Contact from './pages/Contact';
-
-import ProtectedRoute from './components/admin/ProtectedRoute';
-import AdminDashboard from './pages/admin/AdminDashboard';
-import AdminEvents from './pages/admin/AdminEvents';
-import AdminGallery from './pages/admin/AdminGallery';
-import AdminTeam from './pages/admin/AdminTeam';
-import AdminAnalytics from './pages/admin/AdminAnalytics';
+import AdminDisabled from './pages/admin/AdminDisabled';
 import './App.css';
 
-function App() {
+function getPageName(pathname) {
+  if (pathname === '/') return 'home';
+  const segment = pathname.split('/').filter(Boolean)[0];
+  return segment || 'home';
+}
+
+function PageTracker() {
+  const location = useLocation();
+
   useEffect(() => {
-    // Track page views for analytics
-    const trackPageView = () => {
-      // You can implement analytics tracking here
-      console.log('Page viewed:', window.location.pathname);
-    };
+    if (location.pathname.startsWith('/admin')) return;
+    analyticsAPI.track(getPageName(location.pathname));
+  }, [location.pathname]);
 
-    trackPageView();
-  }, []);
+  return null;
+}
 
+function App() {
   return (
     <Router>
+      <PageTracker />
       <div className="App">
         <Routes>
-          {/* Public Routes */}
           <Route path="/" element={
             <>
               <Navbar />
@@ -73,34 +75,7 @@ function App() {
               <WhatsAppFloat />
             </>
           } />
-
-          {/* Admin Routes */}
-          <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
-          <Route path="/admin/dashboard" element={
-            <ProtectedRoute>
-              <AdminDashboard />
-            </ProtectedRoute>
-          } />
-          <Route path="/admin/events" element={
-            <ProtectedRoute>
-              <AdminEvents />
-            </ProtectedRoute>
-          } />
-          <Route path="/admin/gallery" element={
-            <ProtectedRoute>
-              <AdminGallery />
-            </ProtectedRoute>
-          } />
-          <Route path="/admin/team" element={
-            <ProtectedRoute>
-              <AdminTeam />
-            </ProtectedRoute>
-          } />
-          <Route path="/admin/analytics" element={
-            <ProtectedRoute>
-              <AdminAnalytics />
-            </ProtectedRoute>
-          } />
+          <Route path="/admin/*" element={<AdminDisabled />} />
         </Routes>
       </div>
     </Router>
