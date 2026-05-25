@@ -4,6 +4,9 @@
   "framework": "create-react-app",
   "outputDirectory": "client/build",
   "rewrites": [
-    { "source": "/((?!static/).*)", "destination": "/index.html" }
+    {
+      "source": "/((?!static/).*)",
+      "destination": "/index.html"
+    }
   ]
 }
