@@ -19,18 +19,10 @@ const Footer = () => {
               Join our community and achieve your fitness goals today.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">
-                <FaFacebook size={24} />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">
-                <FaInstagram size={24} />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">
-                <FaTwitter size={24} />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">
-                <FaWhatsapp size={24} />
-              </a>
+              <span className="text-gray-400" aria-hidden="true"><FaFacebook size={24} /></span>
+              <span className="text-gray-400" aria-hidden="true"><FaInstagram size={24} /></span>
+              <span className="text-gray-400" aria-hidden="true"><FaTwitter size={24} /></span>
+              <span className="text-gray-400" aria-hidden="true"><FaWhatsapp size={24} /></span>
             </div>
           </div>
 
