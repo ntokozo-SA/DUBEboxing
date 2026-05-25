@@ -1,23 +1,55 @@
-﻿import React from 'react';
+﻿import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { publicAsset } from '../utils/imageUrl';
+import { settingsAPI } from '../services/api';
+import { publicAsset, resolveImageUrl } from '../utils/imageUrl';
+
+const DEFAULT_VIDEO = publicAsset('/home-video.mp4');
 
 const Home = () => {
+  const videoRef = useRef(null);
+  const [videoSrc, setVideoSrc] = useState(DEFAULT_VIDEO);
+
+  useEffect(() => {
+    settingsAPI.get().then((res) => {
+      const url = res.data?.homeVideoUrl?.trim();
+      if (url) setVideoSrc(resolveImageUrl(url));
+    });
+  }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const play = () => {
+      video.play().catch(() => {});
+    };
+
+    video.addEventListener('canplay', play);
+    play();
+
+    return () => video.removeEventListener('canplay', play);
+  }, [videoSrc]);
+
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero Section with home video */}
-      <section className="relative h-screen">
+      {/* Hero Section — full-screen background video */}
+      <section className="relative h-screen overflow-hidden bg-black">
         <video
+          ref={videoRef}
+          key={videoSrc}
           autoPlay
           muted
           loop
           playsInline
-          className="w-full h-full object-cover absolute inset-0 z-0"
-          poster={publicAsset('/logo.jpg')}
+          preload="auto"
+          className="absolute inset-0 w-full h-full object-cover z-0"
         >
-          <source src={publicAsset('/home-video.mp4')} type="video/mp4" />
-          Your browser does not support the video tag.
+          <source src={videoSrc} type="video/mp4" />
         </video>
+        <div
+          className="absolute inset-0 z-[1] bg-black/50"
+          aria-hidden="true"
+        />
         <div className="absolute inset-0 flex items-center justify-center z-10">
           <div className="text-center max-w-4xl mx-auto px-4">
             <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white drop-shadow-lg">
